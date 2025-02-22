@@ -1,9 +1,11 @@
 #include "../../include/shell.hpp"
+#include <unordered_set>
 
 #define GREEN  "\033[32m"
 #define RED    "\033[31m"
 #define BLUE   "\033[34m"
 #define RESET  "\033[0m"
+
 
 Shell::Shell() {
     commands["load"] = [this](const std::vector<std::string>& args) {
@@ -11,6 +13,9 @@ Shell::Shell() {
     };
     commands["gdebug"] = [this](const std::vector<std::string>& args) {
         CmdGDebug();
+    };
+    commands["first"] = [this](const std::vector<std::string>& args) {
+        CmdFirst(args);
     };
 }
 
@@ -51,6 +56,8 @@ void Shell::CmdLoad(const std::vector<std::string>& args) {
         return;
     }
     std::cout << GREEN << "Grammar loaded successfully.\n";
+    ll1 = LL1Parser(grammar);
+    slr1 = SLR1Parser(grammar);
 }
 
 void Shell::CmdGDebug() {
@@ -59,6 +66,54 @@ void Shell::CmdGDebug() {
         return;
     }
     grammar.Debug();
-    std::cout << "\nSymbol Table:\n";
+    std::cout << "\nSymbol Table:\nn";
     grammar.st_.Debug();
+}
+
+void Shell::CmdFirst(const std::vector<std::string>& args) {
+    if (grammar.g_.empty()) {
+        std::cout << RED << "pl-shell: no grammar was loaded. Load one with load <filename>.\n" << RESET;
+        return;
+    }
+    std::string arg;
+    bool verbose_mode = false;
+    po::options_description desc("Options");
+    desc.add_options()
+        ("help,h", "There is no docs, good luck :)")
+        ("string", po::value<std::string>(&arg)->required())
+        ("verbose,v", po::bool_switch(&verbose_mode));
+    po::positional_options_description pos;
+    pos.add("string", 1); 
+
+    try {
+        po::variables_map vm;
+        po::store(po::command_line_parser(args)
+        .options(desc)
+        .positional(pos)
+        .run(), vm);
+        po::notify(vm);
+        std::vector<std::string> splitted {grammar.Split(arg)};
+        if (verbose_mode) {
+            ll1.TeachFirst(splitted);
+            return;
+        } else {
+            std::unordered_set<std::string> result;
+            ll1.First(splitted, result);
+            std::cout << GREEN "✔ " << RESET << "FIRST(" << arg << ") = ";
+            PrintSet(result);
+            std::cout << "\n";
+        }
+    } catch (const std::exception& e) {
+        std::cerr << RED << "pl-shell: " << e.what() << "\n" << RESET;
+        return;
+    }
+}
+
+
+void Shell::PrintSet(const std::unordered_set<std::string>& set) {
+    std::cout << "{ ";
+    for (const std::string& str : set) {
+        std::cout << str << " ";
+    }
+    std::cout << "}";
 }

@@ -12,7 +12,10 @@
 #include "../../include/symbol_table.hpp"
 #include "../../include/tabulate.hpp"
 
-SLR1Parser::SLR1Parser(Grammar gr) : gr_(std::move(gr)) {}
+SLR1Parser::SLR1Parser(Grammar gr) : gr_(std::move(gr)) {
+    ComputeFirstSets();
+    ComputeFollowSets();
+}
 
 std::unordered_set<Lr0Item> SLR1Parser::AllItems() const {
     std::unordered_set<Lr0Item> items;

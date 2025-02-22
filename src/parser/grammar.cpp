@@ -49,6 +49,7 @@ bool Grammar::ReadFromFile(const std::string& filename) {
                 p_grammar[match[1]].push_back(s);
             } else if (std::regex_match(input, match, rx_empty_production)) {
                 p_grammar[match[1]].push_back(st_.EPSILON_);
+                st_.terminals_.insert(st_.EPSILON_);
             } else {
                 return false;
             }

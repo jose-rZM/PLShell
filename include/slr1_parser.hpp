@@ -69,6 +69,8 @@ class SLR1Parser {
      */
     using transition_table =
         std::map<unsigned int, std::map<std::string, unsigned int>>;
+
+    SLR1Parser() = default;
     SLR1Parser(Grammar gr);
 
     /**

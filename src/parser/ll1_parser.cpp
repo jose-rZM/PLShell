@@ -187,7 +187,7 @@ LL1Parser::PredictionSymbols(const std::string&              antecedent,
 void LL1Parser::TeachFirst(const std::vector<std::string>& symbols) {
     std::cout << "Process of finding First(";
     for (const std::string& symbol : symbols) {
-        std::cout << symbol << " ";
+        std::cout << symbol;
     }
     std::cout << "):\n";
 
