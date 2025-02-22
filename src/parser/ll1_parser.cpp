@@ -341,22 +341,31 @@ void LL1Parser::TeachFollow(const std::string& non_terminal) {
                     if (first_of_remaining.find(gr_.st_.EPSILON_) !=
                         first_of_remaining.end()) {
                         std::cout << "   - Since ε ∈ First, add Follow("
-                                  << antecedent << ") to Follow("
+                                  << antecedent << ") = { ";
+                        std::unordered_set<std::string> ant_follow(Follow(antecedent));
+                        for (const std::string& str : ant_follow) {
+                            std::cout << str << " ";
+                        } 
+                        std::cout << "} to Follow("
                                   << non_terminal << ")\n";
-                        const auto& follow_antecedent = Follow(antecedent);
-                        follow_set.insert(follow_antecedent.begin(),
-                                          follow_antecedent.end());
+                        follow_set.insert(ant_follow.begin(),
+                                          ant_follow.end());
                     }
                 }
                 // Case 2: Non-terminal is at the end of the production
                 else {
                     std::cout << "2. " << non_terminal
                               << " is at the end of the production. Add Follow("
-                              << antecedent << ") to Follow(" << non_terminal
+                              << antecedent << ") = { ";
+                     std::unordered_set<std::string> ant_follow(Follow(antecedent));
+                        for (const std::string& str : ant_follow) {
+                            std::cout << str << " ";
+                        }
+         
+                     std::cout << "} to Follow(" << non_terminal
                               << ")\n";
-                    const auto& follow_antecedent = Follow(antecedent);
-                    follow_set.insert(follow_antecedent.begin(),
-                                      follow_antecedent.end());
+                    follow_set.insert(ant_follow.begin(),
+                                      ant_follow.end());
                 }
             }
         }

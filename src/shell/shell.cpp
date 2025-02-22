@@ -17,6 +17,9 @@ Shell::Shell() {
     commands["first"] = [this](const std::vector<std::string>& args) {
         CmdFirst(args);
     };
+    commands["follow"] = [this](const std::vector<std::string>& args) {
+        CmdFollow(args);
+    };
 }
 
 void Shell::Run() {
@@ -51,6 +54,7 @@ void Shell::CmdLoad(const std::vector<std::string>& args) {
         return;
     }
     std::string filename = args[0];
+    grammar = Grammar();
     if (!grammar.ReadFromFile(filename)) {
         std::cout << RED << "pl-shell: load error when reading grammar from file. Check if there are any errors.\n" << RESET;
         return;
@@ -109,6 +113,47 @@ void Shell::CmdFirst(const std::vector<std::string>& args) {
     }
 }
 
+void Shell::CmdFollow(const std::vector<std::string>& args) {
+    if (grammar.g_.empty()) {
+        std::cout << RED << "pl-shell: no grammar was loaded. Load one with load <filename>.\n" << RESET;
+        return;
+    }
+    std::string arg;
+    bool verbose_mode = false;
+    po::options_description desc("Options");
+    desc.add_options()
+        ("help,h", "There is no docs, good luck :)")
+        ("string", po::value<std::string>(&arg)->required())
+        ("verbose,v", po::bool_switch(&verbose_mode));
+    po::positional_options_description pos;
+    pos.add("string", 1); 
+
+    try {
+        po::variables_map vm;
+        po::store(po::command_line_parser(args)
+        .options(desc)
+        .positional(pos)
+        .run(), vm);
+        po::notify(vm);
+        if (arg.size() != 1) {
+            std::cerr << RED << "pl-shell: follow function can only be applied to non terminals characters (strints with size = 1).\n" << RESET;
+            return;
+        }
+
+        if (verbose_mode) {
+            ll1.TeachFollow(arg);
+            return;
+        } else {
+            std::unordered_set<std::string> result {ll1.Follow(arg)};
+            std::cout << GREEN "✔ " << RESET << "FOLLOW(" << arg << ") = ";
+            PrintSet(result);
+            std::cout << "\n";
+        }
+    } catch (const std::exception& e) {
+        std::cerr << RED << "pl-shell: " << e.what() << "\n" << RESET;
+        return;
+    }
+}
 
 void Shell::PrintSet(const std::unordered_set<std::string>& set) {
     std::cout << "{ ";

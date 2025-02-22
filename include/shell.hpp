@@ -28,5 +28,6 @@ private:
     void CmdLoad(const std::vector<std::string>& args);
     void CmdGDebug();
     void CmdFirst(const std::vector<std::string>& args);
+    void CmdFollow(const std::vector<std::string>& args);
     void PrintSet(const std::unordered_set<std::string>& set);
 };
