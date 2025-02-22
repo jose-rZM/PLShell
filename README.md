@@ -4,12 +4,16 @@ PLShell is an interactive shell for grammar analysis and parsing. It supports **
 Designed for both **analysis and education**, it provides **step-by-step explanations** to help visualize parsing processes.
 
 ## 🚀 Features
-✅ **Compute FIRST, FOLLOW, and PREDICT sets**  
-✅ **Build LL(1) parsing tables** with conflict detection  
-✅ **Generate SLR(1) automaton** and visualize states  
-✅ **Parse and validate input strings**  
 ✅ **Load grammars from files (`load grammar.txt`)**  
-✅ **Step-by-step explanations for learning purposes**  
+✅ **Compute LL(1) components**:
+- `first`: Compute the First set of a given string.
+- `follow`: Compute the Follow set of a given non-terminal.
+- `predsymbols`: Compute the Prediction Symbols of a rule.
+- `ll1`: Checks whether the grammar is LL(1) and display the table.
+✅ **Coming soon: Generate SLR(1) automaton** and visualize states  
+✅ **Coming soon: Parse and validate input strings**  
+✅ **Verbose mode: Add `-v` or `--verbose` to any command to get a step-by-step explanation, useful for learning purposes.**
+✅ **Shell environment**: Run multiple commands interactively.
 
 ---
 
@@ -18,3 +22,29 @@ Designed for both **analysis and education**, it provides **step-by-step explana
 - **C++20 or later**  
 - **Boost.ProgramOptions** (for command parsing)  
 
+## Usage
+Once inside `pl-shell` you can execute commands:
+- Load a grammar
+~~~
+load my_grammar.txt
+~~~
+- Compute First set:
+~~~
+first ABC
+first ABC -v
+~~~
+- Compute Follow set:
+~~~
+follow A
+follow A -v
+~~~
+- Compute Prediction Symbols:
+~~~
+predsymbols A BC
+predsymbols A BC -v
+~~~
+- Check if the grammar is LL(1):
+~~~
+ll1
+ll1 -v
+~~~
