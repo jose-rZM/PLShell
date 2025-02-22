@@ -25,6 +25,9 @@ Shell::Shell() {
     commands["ll1"] = [this](const std::vector<std::string>& args) {
         CmdLL1Table(args);
     };
+    commands["allitems"] = [this](const std::vector<std::string>& args) {
+        CmdAllLRItems(args);
+    };
 }
 
 void Shell::Run() {
@@ -262,6 +265,66 @@ void Shell::CmdLL1Table(const std::vector<std::string>& args) {
     } else {
         std::cout << "LL(1) Table:\n";
         ll1.PrintTable();
+    }
+}
+
+void Shell::CmdAllLRItems(const std::vector<std::string>& args) {
+    if (args.size() > 1) {
+        std::cerr << RED << "pl-shell: only 1 argument at most can be given.\n"
+                  << RESET;
+        return;
+    }
+    bool verbose_mode = false;
+    if (!args.empty()) {
+        if (args[0] == "-v" || args[0] == "--verbose") {
+
+            verbose_mode = true;
+        } else {
+            std::cerr << RED
+                      << "pl-shell: unrecognized option. "
+                         "Options are: -v or --verbose.\n"
+                      << RESET;
+            return;
+        }
+    }
+    if (grammar.g_.empty()) {
+        std::cerr << RED
+                  << "pl-shell: no grammar was loaded. Load one with load "
+                     "<filename>.\n"
+                  << RESET;
+        return;
+    }
+    ll1.CreateLL1Table();
+    if (verbose_mode) {
+        slr1.TeachAllItems();
+    } else {
+        std::cout << "All LR0 items:\n";
+        std::unordered_set<Lr0Item> items;
+        items = slr1.AllItems();
+        std::unordered_map<std::string, std::vector<Lr0Item>> grouped_items;
+        for (const Lr0Item& item : items) {
+            grouped_items[item.antecedent_].push_back(item);
+        }
+
+        for (const auto& [antecedent, item_list] : grouped_items) {
+            std::cout << "Non-terminal: " << antecedent << "\n";
+            for (const Lr0Item& item : item_list) {
+                std::cout << "  - " << item.antecedent_ << " -> ";
+                for (size_t i = 0; i < item.consequent_.size(); ++i) {
+                    if (i == item.dot_) {
+                        std::cout << "• ";
+                    }
+                    std::cout << item.consequent_[i] << " ";
+                }
+                if (item.dot_ == item.consequent_.size()) {
+                    std::cout << "•";
+                }
+                std::cout << "\n";
+            }
+
+            std::cout << "Total LR(0) items generated: " << items.size()
+                      << "\n";
+        }
     }
 }
 

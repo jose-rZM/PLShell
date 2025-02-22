@@ -263,6 +263,8 @@ class SLR1Parser {
      */
     bool MakeParser();
 
+    void TeachAllItems();
+
     /// @brief The grammar being processed by the parser.
     Grammar gr_;
 

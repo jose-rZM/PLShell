@@ -291,6 +291,56 @@ bool SLR1Parser::MakeParser() {
     return true;
 }
 
+void SLR1Parser::TeachAllItems() {
+    std::cout << "What is an LR(0) item?\n";
+    std::cout << "An LR(0) item represents a production rule with a 'dot' (•) "
+                 "indicating the current position in the rule.\n";
+    std::cout << "For example, for the rule A -> B C, the LR(0) items are:\n";
+    std::cout << "  - A -> • B C (dot at the beginning)\n";
+    std::cout << "  - A -> B • C (dot after B)\n";
+    std::cout << "  - A -> B C • (dot at the end, complete item)\n";
+    std::cout << "\n";
+
+    std::cout << "How are LR(0) items generated?\n";
+    std::cout << "For each production rule, we generate all possible positions "
+                 "of the dot.\n";
+    std::cout << "For example, for the rule A -> B C, the dot can be at "
+                 "position 0, 1, or 2.\n";
+    std::cout << "This results in the following LR(0) items:\n";
+    std::cout << "  - A -> • B C\n";
+    std::cout << "  - A -> B • C\n";
+    std::cout << "  - A -> B C •\n";
+    std::cout << "\n";
+
+    std::cout << "Now, let's generate all LR(0) items for the given grammar:\n";
+
+    std::unordered_set<Lr0Item> items = AllItems();
+
+    std::unordered_map<std::string, std::vector<Lr0Item>> grouped_items;
+    for (const Lr0Item& item : items) {
+        grouped_items[item.antecedent_].push_back(item);
+    }
+
+    for (const auto& [antecedent, item_list] : grouped_items) {
+        std::cout << "Non-terminal: " << antecedent << "\n";
+        for (const Lr0Item& item : item_list) {
+            std::cout << "  - " << item.antecedent_ << " -> ";
+            for (size_t i = 0; i < item.consequent_.size(); ++i) {
+                if (i == item.dot_) {
+                    std::cout << "• ";
+                }
+                std::cout << item.consequent_[i] << " ";
+            }
+            if (item.dot_ == item.consequent_.size()) {
+                std::cout << "•";
+            }
+            std::cout << "\n";
+        }
+    }
+
+    std::cout << "Total LR(0) items generated: " << items.size() << "\n";
+}
+
 void SLR1Parser::Closure(std::unordered_set<Lr0Item>& items) {
     std::unordered_set<std::string> visited;
     ClosureUtil(items, items.size(), visited);
