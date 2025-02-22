@@ -373,6 +373,71 @@ void SLR1Parser::ClosureUtil(std::unordered_set<Lr0Item>&     items,
         ClosureUtil(items, items.size(), visited);
 }
 
+void SLR1Parser::TeachClosure(std::unordered_set<Lr0Item>& items) {
+    std::cout << "Process of computing Closure for the following items:\n";
+    PrintItems(items);
+
+    std::unordered_set<std::string> visited;
+    TeachClosureUtil(items, items.size(), visited, 0);
+}
+
+void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>& items,
+                                  unsigned int size,
+                                  std::unordered_set<std::string>& visited,
+                                  int depth) {
+    // Indent based on depth for better readability
+    std::string indent(depth * 2, ' ');
+
+    std::unordered_set<Lr0Item> newItems;
+
+    std::cout << indent << "- Checking items for non-terminals after the dot:\n";
+    for (const auto& item : items) {
+        std::string next = item.NextToDot();
+        if (next == gr_.st_.EPSILON_) {
+            continue;
+        }
+
+        std::cout << indent << "  - Item: ";
+        item.PrintItem();
+        std::cout << "\n";
+
+        if (!gr_.st_.IsTerminal(next) &&
+            std::find(visited.cbegin(), visited.cend(), next) == visited.cend()) {
+            std::cout << indent << "    - Found non-terminal after the dot: " << next << "\n";
+            std::cout << indent << "    - Adding all productions of " << next << " with the dot at the beginning:\n";
+
+            const std::vector<production>& rules = gr_.g_.at(next);
+            for (const auto& rule : rules) {
+                Lr0Item newItem(next, rule, 0, gr_.st_.EPSILON_, gr_.st_.EOL_);
+                newItems.insert(newItem);
+
+                std::cout << indent << "      - Added: ";
+                newItem.PrintItem();
+                std::cout << "\n";
+            }
+
+            visited.insert(next);
+        }
+    }
+
+    items.insert(newItems.begin(), newItems.end());
+
+    if (size != items.size()) {
+        std::cout << indent << "- New items were added. Repeating the process...\n";
+        TeachClosureUtil(items, items.size(), visited, depth + 1);
+    } else {
+        std::cout << indent << "- No new items were added. Closure is complete.\n";
+    }
+}
+
+void SLR1Parser::PrintItems(const std::unordered_set<Lr0Item>& items) {
+    for (const auto& item : items) {
+        std::cout << "  - ";
+        item.PrintItem();
+        std::cout << "\n";
+    }
+}
+
 void SLR1Parser::First(std::span<const std::string>     rule,
                        std::unordered_set<std::string>& result) {
     if (rule.empty() || (rule.size() == 1 && rule[0] == gr_.st_.EPSILON_)) {

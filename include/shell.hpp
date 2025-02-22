@@ -35,5 +35,6 @@ class Shell {
     void CmdPredictionSymbols(const std::vector<std::string>& args);
     void CmdLL1Table(const std::vector<std::string>& args);
     void CmdAllLRItems(const std::vector<std::string>& args);
+    void CmdClosure(const std::vector<std::string>& args);
     void PrintSet(const std::unordered_set<std::string>& set);
 };
