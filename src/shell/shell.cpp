@@ -39,6 +39,12 @@ Shell::Shell() {
     commands["history"] = [this](const std::vector<std::string>& args) {
         PrintHistory();
     };
+    commands["help"] = [this](const std::vector<std::string>& args) {
+        CmdHelp();
+    };
+    commands["clear"] = [this](const std::vector<std::string>& args) {
+        CmdClear();
+    };
 
     std::signal(SIGINT, Shell::SignalHandler);
     std::signal(SIGTSTP, Shell::SignalHandler);
@@ -125,6 +131,25 @@ void Shell::SignalHandler(int signum) {
                   << GREEN << "pl-shell> " << RESET;
         std::cout.flush();
     }
+}
+
+void Shell::CmdHelp() {
+    std::cout << "Available commands:\n";
+    std::cout << "  load         - Load a file\n";
+    std::cout << "  gdebug       - Enable/disable debug mode\n";
+    std::cout << "  first        - Compute FIRST set\n";
+    std::cout << "  follow       - Compute FOLLOW set\n";
+    std::cout << "  predsymbols  - List predictive symbols\n";
+    std::cout << "  ll1          - Generate LL(1) parsing table\n";
+    std::cout << "  allitems     - List all LR(0) items\n";
+    std::cout << "  closure      - Compute closure of a set of items\n";
+    std::cout << "  exit         - Exit the shell\n";
+    std::cout << "  history      - Show command history\n";
+    std::cout << "  help         - Show this help message\n";
+}
+
+void Shell::CmdClear() {
+    std::cout << "\033[2J\033[1;1H";
 }
 
 void Shell::CmdLoad(const std::vector<std::string>& args) {
@@ -455,8 +480,7 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
             splitted.insert(splitted.end(), splitted_after_dot.begin(),
                             splitted_after_dot.end());
             size_t dot_idx = splitted_before_dot.size();
-
-            Lr0Item item{antecedent, splitted, dot_idx, grammar.st_.EPSILON_,
+            Lr0Item item{antecedent, splitted, (unsigned int) dot_idx, grammar.st_.EPSILON_,
                          grammar.st_.EOL_};
             items.insert(item);
         }

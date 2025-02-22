@@ -39,6 +39,8 @@ class Shell {
     void PrintHistory();
     static char** ShellCompletion(const char* text, int start, int end);
     static char* CommandGenerator(const char* text, int state);
+    void CmdHelp();
+    void CmdClear();
     void CmdLoad(const std::vector<std::string>& args);
     void CmdGDebug();
     void CmdFirst(const std::vector<std::string>& args);
