@@ -38,7 +38,7 @@ test('Tests', test_exe)
 custom_target(
     'run_tests',
     output: 'test-stamp',
-    command: ['meson', 'test', '-C', meson.current_build_dir()],
+    command: [test_exe.full_path()],
     depends: test_exe,
     build_by_default: false
 )

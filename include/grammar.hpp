@@ -19,9 +19,12 @@ using production = std::vector<std::string>;
 struct Grammar {
 
     Grammar() = default;
-    explicit Grammar(
-        const std::unordered_map<std::string, std::vector<production>>&
-            grammar);
+
+
+    bool ReadFromFile(const std::string& filename);
+
+    std::vector<std::string> Split(const std::string& s);
+    bool AddRule(const std::string& antecedent, const std::string& consequent);
 
     /**
      * @brief Sets the axiom (entry point) of the grammar.

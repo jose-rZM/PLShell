@@ -4,29 +4,121 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include <regex>
+#include <fstream>
 
-Grammar::Grammar(
-    const std::unordered_map<std::string, std::vector<production>>& grammar) {
-    for (const auto& [nt, prods] : grammar) {
-        st_.PutSymbol(nt, false);
-        for (const auto& prod : prods) {
-            for (const std::string& symbol : prod) {
-                if (symbol == "EPSILON") {
-                    st_.PutSymbol(symbol, true);
-                    continue;
-                } else if (std::islower(symbol[0])) {
-                    st_.PutSymbol(symbol, true);
-                }
+
+bool Grammar::ReadFromFile(const std::string& filename) {
+    std::ifstream file(filename, std::ios::in);
+
+    if (!file.is_open()) {
+            return false;
+    }
+
+    std::unordered_map<std::string, std::vector<std::string>> p_grammar;
+    std::regex rx_terminal{R"(terminal\s+([a-zA-Z_\'][a-zA-Z_0-9\']*)\s+([^]*);\s*)"};
+    std::regex rx_axiom{R"(start\s+with\s+([a-zA-Z_\'][a-zA-Z_0-9\']*);\s*)"};
+    std::regex rx_empty_production{R"(([a-zA-Z_\'][a-zA-Z_0-9\']*)\s*->;\s*)"};
+    std::regex rx_production{"([a-zA-Z_\\'][a-zA-Z_0-9\\']*)\\s*->\\s*([a-zA-Z_\\'][a-zA-Z_0-9\\s$\\']*);"};
+
+    std::string input;
+    std::smatch match;
+
+    if (file.peek() == std::ifstream::traits_type::eof()) {
+        return false;
+    }
+
+    try {
+        while (getline(file, input) && input != ";") {
+            std::string id;
+            std::string value;
+
+            if (std::regex_match(input, match, rx_terminal)) {
+                st_.PutSymbol(match[1], match[2]);
+            } else if (std::regex_match(input, match, rx_axiom)) {
+                SetAxiom(match[1]);
+            } else {
+                return false;
+            }
+        }
+
+        while (getline(file, input) && input != ";") {
+            if (std::regex_match(input, match, rx_production)) {
+                std::string s = match[2];
+                s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
+                p_grammar[match[1]].push_back(s);
+            } else if (std::regex_match(input, match, rx_empty_production)) {
+                p_grammar[match[1]].push_back(st_.EPSILON_);
+            } else {
+                return false;
+            }
+        }
+    } catch (const std::exception& e) {
+        file.close();
+        return false;
+    }
+
+    file.close();
+
+    // Add non-terminal symbols
+    for (const auto& entry : p_grammar) {
+        st_.PutSymbol(entry.first);
+    }
+
+    // Add all rules
+    for (const auto& entry : p_grammar) {
+        for (const auto& prod : entry.second) {
+            if (!AddRule(entry.first, prod)) {
+                return false;
             }
         }
     }
-    axiom_ = "S";
-    g_     = std::move(grammar);
-    if (g_.find(axiom_) == g_.end()) {
-        // S -> firstNonTerminal $
-        g_[axiom_] = {{*st_.non_terminals_.begin(), st_.EOL_}};
-        st_.PutSymbol(axiom_, false);
+
+    return true; // Todo salió bien
+}
+
+std::vector<std::string> Grammar::Split(const std::string& s) {
+    if (s == st_.EPSILON_) {
+        return {st_.EPSILON_};
     }
+    std::vector<std::string> splitted{};
+    std::string              str;
+    unsigned                 start{0};
+    unsigned                 end{1};
+    while (end <= s.size()) {
+        str = s.substr(start, end - start);
+
+        if (st_.In(str)) {
+            unsigned lookahead = end + 1;
+            while (lookahead <= s.size()) {
+                std::string extended = s.substr(start, lookahead - start);
+                if (st_.In(extended)) {
+                    end = lookahead;
+                }
+                ++lookahead;
+            }
+            splitted.push_back(s.substr(start, end - start));
+            start = end;
+            end   = start + 1;
+        } else {
+            ++end;
+        }
+    }
+
+    // If start < end - 1 there is at least one symbol not recognized
+    if (start < end - 1) {
+        return {};
+    }
+
+    return splitted;
+}
+
+bool Grammar::AddRule(const std::string& antecedent,
+                      const std::string& consequent) {
+    std::vector<std::string> splitted_consequent{Split(consequent)};
+    if (splitted_consequent.empty()) return false;
+    g_[antecedent].push_back(splitted_consequent);
+    return true;
 }
 
 void Grammar::SetAxiom(const std::string& axiom) {
