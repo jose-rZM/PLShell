@@ -1,7 +1,7 @@
-project('plshell', 'cpp', version: '1.0.0', default_options: ['cpp_std=c++20', 'buildtype=debug'])
+project('plshell', 'cpp', version: '1.0.0', default_options: ['cpp_std=c++20', 'buildtype=release'])
 
 boost_dep = dependency('boost', modules: ['program_options'], static: true)
-readline_dep = dependency('readline', required: true)
+readline_dep = dependency('readline', required: true, static:false)
 
 gtest_dep = dependency('gtest', required: false)
 
@@ -16,7 +16,8 @@ executable('plshell',
         'src/parser/symbol_table.cpp',
         'src/parser/grammar.cpp'
     ),
-    dependencies: [boost_dep, readline_dep]
+    dependencies: [boost_dep, readline_dep],
+    cpp_args: ['-Oz', '-ffunction-sections', '-fdata-sections']
 )
 
 # Tests
@@ -35,10 +36,3 @@ test_exe = executable('tests',
 )
 test('Tests', test_exe)
 
-custom_target(
-    'run_tests',
-    output: 'test-stamp',
-    command: [test_exe.full_path()],
-    depends: test_exe,
-    build_by_default: false
-)
