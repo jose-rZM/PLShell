@@ -1,25 +1,26 @@
 #include "../../include/grammar.hpp"
 #include "../../include/symbol_table.hpp"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
+#include <regex>
 #include <unordered_map>
 #include <vector>
-#include <regex>
-#include <fstream>
-
 
 bool Grammar::ReadFromFile(const std::string& filename) {
     std::ifstream file(filename, std::ios::in);
 
     if (!file.is_open()) {
-            return false;
+        return false;
     }
 
     std::unordered_map<std::string, std::vector<std::string>> p_grammar;
-    std::regex rx_terminal{R"(terminal\s+([a-zA-Z_\'][a-zA-Z_0-9\']*)\s+([^]*);\s*)"};
+    std::regex                                                rx_terminal{
+        R"(terminal\s+([a-zA-Z_\'][a-zA-Z_0-9\']*)\s+([^]*);\s*)"};
     std::regex rx_axiom{R"(start\s+with\s+([a-zA-Z_\'][a-zA-Z_0-9\']*);\s*)"};
     std::regex rx_empty_production{R"(([a-zA-Z_\'][a-zA-Z_0-9\']*)\s*->;\s*)"};
-    std::regex rx_production{"([a-zA-Z_\\'][a-zA-Z_0-9\\']*)\\s*->\\s*([a-zA-Z_\\'][a-zA-Z_0-9\\s$\\']*);"};
+    std::regex rx_production{"([a-zA-Z_\\'][a-zA-Z_0-9\\']*)\\s*->\\s*([a-zA-Z_"
+                             "\\'][a-zA-Z_0-9\\s$\\']*);"};
 
     std::string input;
     std::smatch match;
@@ -117,7 +118,8 @@ std::vector<std::string> Grammar::Split(const std::string& s) {
 bool Grammar::AddRule(const std::string& antecedent,
                       const std::string& consequent) {
     std::vector<std::string> splitted_consequent{Split(consequent)};
-    if (splitted_consequent.empty()) return false;
+    if (splitted_consequent.empty())
+        return false;
     g_[antecedent].push_back(splitted_consequent);
     return true;
 }

@@ -4,6 +4,8 @@ boost_dep = dependency('boost', modules: ['program_options'])
 
 gtest_dep = dependency('gtest', required: false)
 
+clang_format = find_program('clang-format', required: false)
+
 executable('plshell',
     files(
         'src/main.cpp',
@@ -40,5 +42,11 @@ custom_target(
     output: 'test-stamp',
     command: [test_exe.full_path()],
     depends: test_exe,
+    build_by_default: false
+)
+
+custom_target('format',
+    output: 'format-stamp',
+    command: ['find', '.', '-name', '*.cpp', '-o', '-name', '*.hpp', '|', 'xargs', clang_format, '-i'],
     build_by_default: false
 )

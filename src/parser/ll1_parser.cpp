@@ -51,32 +51,34 @@ void LL1Parser::First(std::span<const std::string>     rule,
     }
 
     if (rule.size() > 1 && rule[0] == gr_.st_.EPSILON_) {
-        First(std::span<const std::string>(rule.begin() + 1, rule.end()), result);
+        First(std::span<const std::string>(rule.begin() + 1, rule.end()),
+              result);
     } else {
 
-    if (gr_.st_.IsTerminal(rule[0])) {
-        // EOL cannot be in first sets, if we reach EOL it means that the axiom
-        // is nullable, so epsilon is included instead
-        if (rule[0] == gr_.st_.EOL_) {
-            result.insert(gr_.st_.EPSILON_);
+        if (gr_.st_.IsTerminal(rule[0])) {
+            // EOL cannot be in first sets, if we reach EOL it means that the
+            // axiom is nullable, so epsilon is included instead
+            if (rule[0] == gr_.st_.EOL_) {
+                result.insert(gr_.st_.EPSILON_);
+                return;
+            }
+            result.insert(rule[0]);
             return;
         }
-        result.insert(rule[0]);
-        return;
-    }
 
-    const std::unordered_set<std::string>& fii = first_sets_[rule[0]];
-    for (const auto& s : fii) {
-        if (s != gr_.st_.EPSILON_) {
-            result.insert(s);
+        const std::unordered_set<std::string>& fii = first_sets_[rule[0]];
+        for (const auto& s : fii) {
+            if (s != gr_.st_.EPSILON_) {
+                result.insert(s);
+            }
         }
-    }
 
-    if (fii.find(gr_.st_.EPSILON_) == fii.cend()) {
-        return;
+        if (fii.find(gr_.st_.EPSILON_) == fii.cend()) {
+            return;
+        }
+        First(std::span<const std::string>(rule.begin() + 1, rule.end()),
+              result);
     }
-    First(std::span<const std::string>(rule.begin() + 1, rule.end()), result);
-}
 }
 
 // Least fixed point
@@ -202,16 +204,17 @@ void LL1Parser::TeachFirst(const std::vector<std::string>& symbols) {
     std::cout << "}\n";
 }
 
-void LL1Parser::TeachFirstUtil(const std::vector<std::string>& symbols,
+void LL1Parser::TeachFirstUtil(const std::vector<std::string>&  symbols,
                                std::unordered_set<std::string>& first_set,
-                               int depth) {
+                               int                              depth) {
     // Base case: If all symbols are processed, return
     if (symbols.empty()) {
         return;
     }
 
-    std::string current_symbol = symbols[0];
-    std::vector<std::string> remaining_symbols(symbols.begin() + 1, symbols.end());
+    std::string              current_symbol = symbols[0];
+    std::vector<std::string> remaining_symbols(symbols.begin() + 1,
+                                               symbols.end());
 
     // Indent based on depth for better readability
     std::string indent(depth * 2, ' ');
@@ -224,19 +227,22 @@ void LL1Parser::TeachFirstUtil(const std::vector<std::string>& symbols,
         }
         std::cout << "\n";
         std::cout << indent << "- Found terminal: " << current_symbol << "\n";
-        std::vector<std::string> all {current_symbol};
+        std::vector<std::string>        all{current_symbol};
         std::unordered_set<std::string> fii;
-        all.insert(all.end(), remaining_symbols.begin(), remaining_symbols.end());
+        all.insert(all.end(), remaining_symbols.begin(),
+                   remaining_symbols.end());
         First(std::span<const std::string>(all.begin(), all.end()), fii);
         first_set.insert(fii.begin(), fii.end());
         return;
     }
 
     // Case 2: Current symbol is a non-terminal
-    std::cout << indent << "- Deriving non-terminal: " << current_symbol << "\n";
+    std::cout << indent << "- Deriving non-terminal: " << current_symbol
+              << "\n";
     const auto& productions = gr_.g_.at(current_symbol);
     for (const auto& prod : productions) {
-        std::cout << indent << "  Using production: " << current_symbol << " -> ";
+        std::cout << indent << "  Using production: " << current_symbol
+                  << " -> ";
         for (const std::string& symbol : prod) {
             std::cout << symbol << " ";
         }
@@ -244,16 +250,19 @@ void LL1Parser::TeachFirstUtil(const std::vector<std::string>& symbols,
 
         // Recursively derive the production
         std::vector<std::string> new_symbols = prod;
-        new_symbols.insert(new_symbols.end(), remaining_symbols.begin(), remaining_symbols.end());
+        new_symbols.insert(new_symbols.end(), remaining_symbols.begin(),
+                           remaining_symbols.end());
         TeachFirstUtil(new_symbols, first_set, depth + 1);
 
-
         // Check if ε is in First(prod)
-        bool has_epsilon = std::find(prod.begin(), prod.end(), gr_.st_.EPSILON_) != prod.end();
+        bool has_epsilon =
+            std::find(prod.begin(), prod.end(), gr_.st_.EPSILON_) != prod.end();
 
         // If ε is in First(prod), continue deriving the remaining symbols
         if (has_epsilon) {
-            std::cout << indent << "  - ε found in production. Deriving remaining symbols: ";
+            std::cout
+                << indent
+                << "  - ε found in production. Deriving remaining symbols: ";
             for (const std::string& symbol : remaining_symbols) {
                 std::cout << symbol << " ";
             }
@@ -342,14 +351,13 @@ void LL1Parser::TeachFollow(const std::string& non_terminal) {
                         first_of_remaining.end()) {
                         std::cout << "   - Since ε ∈ First, add Follow("
                                   << antecedent << ") = { ";
-                        std::unordered_set<std::string> ant_follow(Follow(antecedent));
+                        std::unordered_set<std::string> ant_follow(
+                            Follow(antecedent));
                         for (const std::string& str : ant_follow) {
                             std::cout << str << " ";
-                        } 
-                        std::cout << "} to Follow("
-                                  << non_terminal << ")\n";
-                        follow_set.insert(ant_follow.begin(),
-                                          ant_follow.end());
+                        }
+                        std::cout << "} to Follow(" << non_terminal << ")\n";
+                        follow_set.insert(ant_follow.begin(), ant_follow.end());
                     }
                 }
                 // Case 2: Non-terminal is at the end of the production
@@ -357,15 +365,14 @@ void LL1Parser::TeachFollow(const std::string& non_terminal) {
                     std::cout << "2. " << non_terminal
                               << " is at the end of the production. Add Follow("
                               << antecedent << ") = { ";
-                     std::unordered_set<std::string> ant_follow(Follow(antecedent));
-                        for (const std::string& str : ant_follow) {
-                            std::cout << str << " ";
-                        }
-         
-                     std::cout << "} to Follow(" << non_terminal
-                              << ")\n";
-                    follow_set.insert(ant_follow.begin(),
-                                      ant_follow.end());
+                    std::unordered_set<std::string> ant_follow(
+                        Follow(antecedent));
+                    for (const std::string& str : ant_follow) {
+                        std::cout << str << " ";
+                    }
+
+                    std::cout << "} to Follow(" << non_terminal << ")\n";
+                    follow_set.insert(ant_follow.begin(), ant_follow.end());
                 }
             }
         }
@@ -379,7 +386,8 @@ void LL1Parser::TeachFollow(const std::string& non_terminal) {
     std::cout << "}\n";
 }
 
-void LL1Parser::TeachPredictionSymbols(const std::string& antecedent, const production& consequent) {
+void LL1Parser::TeachPredictionSymbols(const std::string& antecedent,
+                                       const production&  consequent) {
     // Convert the consequent to a string for display purposes
     std::string consequent_str;
     for (const std::string& symbol : consequent) {
@@ -389,7 +397,8 @@ void LL1Parser::TeachPredictionSymbols(const std::string& antecedent, const prod
         consequent_str.pop_back(); // Remove the trailing space
     }
 
-    std::cout << "Process of finding prediction symbols for the rule " << antecedent << " -> " << consequent_str << ":\n";
+    std::cout << "Process of finding prediction symbols for the rule "
+              << antecedent << " -> " << consequent_str << ":\n";
 
     // Step 1: Compute First(consequent)
     std::unordered_set<std::string> first_of_consequent;
@@ -409,17 +418,23 @@ void LL1Parser::TeachPredictionSymbols(const std::string& antecedent, const prod
         }
     }
 
-    std::cout << "2. Initialize prediction symbols with First(" << consequent_str << ") excluding ε: { ";
+    std::cout << "2. Initialize prediction symbols with First("
+              << consequent_str << ") excluding ε: { ";
     for (const std::string& symbol : prediction_symbols) {
         std::cout << symbol << " ";
     }
     std::cout << "}\n";
 
-    // Step 3: If ε ∈ First(consequent), add Follow(antecedent) to prediction symbols
-    if (first_of_consequent.find(gr_.st_.EPSILON_) != first_of_consequent.end()) {
-        std::cout << "\t- Since ε ∈ First(" << consequent_str << "), add Follow(" << antecedent << ") to prediction symbols.\n";
+    // Step 3: If ε ∈ First(consequent), add Follow(antecedent) to prediction
+    // symbols
+    if (first_of_consequent.find(gr_.st_.EPSILON_) !=
+        first_of_consequent.end()) {
+        std::cout << "\t- Since ε ∈ First(" << consequent_str
+                  << "), add Follow(" << antecedent
+                  << ") to prediction symbols.\n";
         const auto& follow_antecedent = Follow(antecedent);
-        prediction_symbols.insert(follow_antecedent.begin(), follow_antecedent.end());
+        prediction_symbols.insert(follow_antecedent.begin(),
+                                  follow_antecedent.end());
 
         std::cout << "\t\tFollow(" << antecedent << ") = { ";
         for (const std::string& symbol : follow_antecedent) {
@@ -429,7 +444,8 @@ void LL1Parser::TeachPredictionSymbols(const std::string& antecedent, const prod
     }
 
     // Step 4: Display the final prediction symbols
-    std::cout << "3. Final prediction symbols for " << antecedent << " -> " << consequent_str << " are: { ";
+    std::cout << "3. Final prediction symbols for " << antecedent << " -> "
+              << consequent_str << " are: { ";
     for (const std::string& symbol : prediction_symbols) {
         std::cout << symbol << " ";
     }

@@ -20,7 +20,6 @@ struct Grammar {
 
     Grammar() = default;
 
-
     bool ReadFromFile(const std::string& filename);
 
     std::vector<std::string> Split(const std::string& s);

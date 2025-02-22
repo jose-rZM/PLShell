@@ -1,9 +1,9 @@
+#include <boost/program_options.hpp>
 #include <iostream>
-#include <unordered_map>
-#include <vector>
 #include <sstream>
 #include <string>
-#include <boost/program_options.hpp>
+#include <unordered_map>
+#include <vector>
 
 #include "grammar.hpp"
 #include "ll1_parser.hpp"
@@ -12,16 +12,19 @@
 namespace po = boost::program_options;
 
 class Shell {
-public:
+  public:
     Shell();
 
     void Run();
-private:
-    Grammar grammar;
-    LL1Parser ll1;
+
+  private:
+    Grammar    grammar;
+    LL1Parser  ll1;
     SLR1Parser slr1;
 
-    std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>> commands;
+    std::unordered_map<std::string,
+                       std::function<void(const std::vector<std::string>&)>>
+         commands;
     bool running = true;
 
     void ExecuteCommand(const std::string& input);

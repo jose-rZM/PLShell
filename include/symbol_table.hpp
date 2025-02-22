@@ -30,8 +30,8 @@ struct SymbolTable {
 
     /// @brief Main symbol table, mapping identifiers to a pair of symbol type
     /// and its regex.
-    std::unordered_map<std::string, std::pair<symbol_type, std::string>> st_{{EOL_, {TERMINAL, EOL_}},
-                                                     {EPSILON_, {TERMINAL, EPSILON_}}};
+    std::unordered_map<std::string, std::pair<symbol_type, std::string>> st_{
+        {EOL_, {TERMINAL, EOL_}}, {EPSILON_, {TERMINAL, EPSILON_}}};
 
     /**
      * @brief The set of terminal symbols in the grammar, including the
@@ -70,8 +70,7 @@ struct SymbolTable {
      */
     void PutSymbol(const std::string& identifier, const std::string& regex);
 
-void PutSymbol(const std::string &identifier);
-
+    void PutSymbol(const std::string& identifier);
 
     /**
      * @brief Checks if a symbol exists in the symbol table.
