@@ -429,14 +429,14 @@ void LL1Parser::TeachPredictionSymbols(const std::string& antecedent,
     // symbols
     if (first_of_consequent.find(gr_.st_.EPSILON_) !=
         first_of_consequent.end()) {
-        std::cout << "\t- Since ε ∈ First(" << consequent_str
+        std::cout << "  - Since ε ∈ First(" << consequent_str
                   << "), add Follow(" << antecedent
                   << ") to prediction symbols.\n";
         const auto& follow_antecedent = Follow(antecedent);
         prediction_symbols.insert(follow_antecedent.begin(),
                                   follow_antecedent.end());
 
-        std::cout << "\t\tFollow(" << antecedent << ") = { ";
+        std::cout << "    Follow(" << antecedent << ") = { ";
         for (const std::string& symbol : follow_antecedent) {
             std::cout << symbol << " ";
         }
@@ -461,7 +461,7 @@ void LL1Parser::TeachLL1Table() {
         for (const production& prod : prods) {
             std::unordered_set<std::string> pred;
             pred = PredictionSymbols(nt, prod);
-            std::cout << "\t" << i + ". PD( " << nt << " -> ";
+            std::cout << "  " << i + ". PD( " << nt << " -> ";
             for (const std::string& symbol : prod) {
                 std::cout << symbol << " ";
             }
@@ -475,7 +475,7 @@ void LL1Parser::TeachLL1Table() {
     std::cout
         << "2. A grammar meets LL condition if for every non terminal, none of "
            "its productions have common prediction symbols.\nThat is, for "
-           "every rule A -> X and A -> Y, PS(A -> X) ∩ S(A -> Y) = ∅\n";
+           "every rule A -> X and A -> Y, PS(A -> X) ∩ PS(A -> Y) = ∅\n";
     bool has_conflicts = false;
     for (const auto& [nt, cols] : ll1_t_) {
         for (const auto& col : cols) {
@@ -484,7 +484,7 @@ void LL1Parser::TeachLL1Table() {
                 const std::vector<production> prods = col.second;
                 std::cout << "- Conflict under " << col.first << ":\n";
                 for (const production& prod : prods) {
-                    std::cout << "\tPD( " << nt << " -> ";
+                    std::cout << "  PD( " << nt << " -> ";
                     for (const std::string& symbol : prod) {
                         std::cout << symbol << " ";
                     }
@@ -505,7 +505,7 @@ void LL1Parser::TeachLL1Table() {
             << "5. Place α in the cell (A,β) if β ∈ PS(A ->α), empty if not.\n";
         for (const auto& [nt, cols] : ll1_t_) {
             for (const auto& col : cols) {
-                std::cout << "\t- ll1(" << nt << ", " << col.first << ") = ";
+                std::cout << "  - ll1(" << nt << ", " << col.first << ") = ";
                 for (const std::string& symbol : col.second.at(0)) {
                     std::cout << symbol << " ";
                 }

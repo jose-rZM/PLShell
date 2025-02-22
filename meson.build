@@ -1,6 +1,6 @@
 project('plshell', 'cpp', version: '1.0.0', default_options: ['cpp_std=c++20', 'buildtype=debug'])
 
-boost_dep = dependency('boost', modules: ['program_options'])
+boost_dep = dependency('boost', modules: ['program_options'], static: true)
 
 gtest_dep = dependency('gtest', required: false)
 
