@@ -21,5 +21,6 @@ private:
 
     void ExecuteCommand(const std::string& input);
     void CmdLoad(const std::vector<std::string>& args);
+    void CmdGDebug();
     void CmdFirst(const std::vector<std::string>& args);
 };

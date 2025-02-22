@@ -72,6 +72,7 @@ struct SymbolTable {
 
 void PutSymbol(const std::string &identifier);
 
+
     /**
      * @brief Checks if a symbol exists in the symbol table.
      *
@@ -95,4 +96,6 @@ void PutSymbol(const std::string &identifier);
      * @return true if the symbol is terminal, otherwise false.
      */
     bool IsTerminalWthoEol(const std::string& s);
+
+    void Debug();
 };

@@ -12,10 +12,10 @@ void SortProductions(Grammar& grammar) {
 TEST(LL1__Test, FirstSet) {
     Grammar g;
 
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
 
     g.axiom_ = "S";
 
@@ -35,11 +35,11 @@ TEST(LL1__Test, FirstSet) {
 TEST(LL1__Test, FirstSetWithNullableSymbols) {
     Grammar g;
 
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -58,12 +58,12 @@ TEST(LL1__Test, FirstSetWithNullableSymbols) {
 
 TEST(LL1__Test, FirstSetMultipleSymbols) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -84,10 +84,10 @@ TEST(LL1__Test, FirstSetMultipleSymbols) {
 
 TEST(LL1__Test, FirstSetEndingWithNullable) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -106,16 +106,16 @@ TEST(LL1__Test, FirstSetEndingWithNullable) {
 
 TEST(LL1__Test, FirstSetWithAllSymbols) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("D", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol("d", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("D");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol("d", "d");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -140,16 +140,16 @@ TEST(LL1__Test, FirstSetWithAllSymbols) {
 
 TEST(LL1__Test, FirstSetWithOneSymbolAndEpsilon) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("D", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol("d", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("D");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol("d", "d");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -174,15 +174,15 @@ TEST(LL1__Test, FirstSetWithOneSymbolAndEpsilon) {
 
 TEST(LL1__Test, FirstSetWithMultipleSymbols2) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("E", false);
-    g.st_.PutSymbol("E'", false);
-    g.st_.PutSymbol("T", false);
-    g.st_.PutSymbol("+", true);
-    g.st_.PutSymbol("(", true);
-    g.st_.PutSymbol(")", true);
-    g.st_.PutSymbol("n", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("E");
+    g.st_.PutSymbol("E'");
+    g.st_.PutSymbol("T");
+    g.st_.PutSymbol("+", "+");
+    g.st_.PutSymbol("(", "(");
+    g.st_.PutSymbol(")", ")");
+    g.st_.PutSymbol("n", "n");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -205,15 +205,15 @@ TEST(LL1__Test, FirstSetWithMultipleSymbols2) {
 
 TEST(LL1__Test, FirstSetWithTerminalSymbolAtTheBeginning) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("E", false);
-    g.st_.PutSymbol("E'", false);
-    g.st_.PutSymbol("T", false);
-    g.st_.PutSymbol("+", true);
-    g.st_.PutSymbol("(", true);
-    g.st_.PutSymbol(")", true);
-    g.st_.PutSymbol("n", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("E");
+    g.st_.PutSymbol("E'");
+    g.st_.PutSymbol("T");
+    g.st_.PutSymbol("+", "+");
+    g.st_.PutSymbol("(", "(");
+    g.st_.PutSymbol(")", ")");
+    g.st_.PutSymbol("n", "n");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -236,15 +236,15 @@ TEST(LL1__Test, FirstSetWithTerminalSymbolAtTheBeginning) {
 
 TEST(LL1__Test, FirstSetWithOnlyEpsilon) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("E", false);
-    g.st_.PutSymbol("E'", false);
-    g.st_.PutSymbol("T", false);
-    g.st_.PutSymbol("+", true);
-    g.st_.PutSymbol("(", true);
-    g.st_.PutSymbol(")", true);
-    g.st_.PutSymbol("n", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("E");
+    g.st_.PutSymbol("E'");
+    g.st_.PutSymbol("T");
+    g.st_.PutSymbol("+", "+");
+    g.st_.PutSymbol("(", "(");
+    g.st_.PutSymbol(")", ")");
+    g.st_.PutSymbol("n", "n");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -267,16 +267,16 @@ TEST(LL1__Test, FirstSetWithOnlyEpsilon) {
 
 TEST(LL1__Test, FirstSetWithEpsilon2) {
     Grammar g;
-    g.st_.PutSymbol("S'", false);
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A'", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("d", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S'");
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A'");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("d", "d");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S'";
 
@@ -300,12 +300,12 @@ TEST(LL1__Test, FirstSetWithEpsilon2) {
 
 TEST(LL1__Test, FirstSetWithNestedNullableSymbols) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -326,12 +326,12 @@ TEST(LL1__Test, FirstSetWithNestedNullableSymbols) {
 
 TEST(LL1__Test, FirstSetWithMultipleNullableSymbols) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -350,11 +350,11 @@ TEST(LL1__Test, FirstSetWithMultipleNullableSymbols) {
 
 TEST(LL1__Test, FirstSetWithTerminalAtEnd) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -373,12 +373,12 @@ TEST(LL1__Test, FirstSetWithTerminalAtEnd) {
 
 TEST(LL1__Test, FirstSetWithIndirectLeftRecursion) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -399,14 +399,14 @@ TEST(LL1__Test, FirstSetWithIndirectLeftRecursion) {
 
 TEST(LL1__Test, FirstSetWithComplexNullableSymbols) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -430,16 +430,16 @@ TEST(LL1__Test, FirstSetWithComplexNullableSymbols) {
 
 TEST(LL1__Test, AllFirstSets) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("D", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol("d", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("D");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol("d", "d");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -467,16 +467,16 @@ TEST(LL1__Test, AllFirstSets) {
 
 TEST(LL1__Test, FollowSet2) {
     Grammar g;
-    g.st_.PutSymbol("S'", false);
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A'", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("d", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S'");
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A'");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("d", "d");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S'";
 
@@ -500,15 +500,15 @@ TEST(LL1__Test, FollowSet2) {
 
 TEST(LL1__Test, FollowTest1) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("E", false);
-    g.st_.PutSymbol("E'", false);
-    g.st_.PutSymbol("T", false);
-    g.st_.PutSymbol("+", true);
-    g.st_.PutSymbol("(", true);
-    g.st_.PutSymbol(")", true);
-    g.st_.PutSymbol("n", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("E");
+    g.st_.PutSymbol("E'");
+    g.st_.PutSymbol("T");
+    g.st_.PutSymbol("+", "+");
+    g.st_.PutSymbol("(", "(");
+    g.st_.PutSymbol(")", ")");
+    g.st_.PutSymbol("n", "n");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -531,15 +531,15 @@ TEST(LL1__Test, FollowTest1) {
 
 TEST(LL1__Test, FollowTest2) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("E", false);
-    g.st_.PutSymbol("E'", false);
-    g.st_.PutSymbol("T", false);
-    g.st_.PutSymbol("+", true);
-    g.st_.PutSymbol("(", true);
-    g.st_.PutSymbol(")", true);
-    g.st_.PutSymbol("n", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("E");
+    g.st_.PutSymbol("E'");
+    g.st_.PutSymbol("T");
+    g.st_.PutSymbol("+", "+");
+    g.st_.PutSymbol("(", "(");
+    g.st_.PutSymbol(")", ")");
+    g.st_.PutSymbol("n", "n");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -562,12 +562,12 @@ TEST(LL1__Test, FollowTest2) {
 
 TEST(LL1__Test, FollowSetWithNestedProductions) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -588,12 +588,12 @@ TEST(LL1__Test, FollowSetWithNestedProductions) {
 
 TEST(LL1__Test, FollowSetWithMultipleOccurrences) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -614,12 +614,12 @@ TEST(LL1__Test, FollowSetWithMultipleOccurrences) {
 
 TEST(LL1__Test, FollowSetWithIndirectLeftRecursion) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -640,14 +640,14 @@ TEST(LL1__Test, FollowSetWithIndirectLeftRecursion) {
 
 TEST(LL1__Test, FollowSetWithMultipleNullableSymbols) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -671,15 +671,15 @@ TEST(LL1__Test, FollowSetWithMultipleNullableSymbols) {
 
 TEST(LL1__Test, AllFollowSets) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("E", false);
-    g.st_.PutSymbol("E'", false);
-    g.st_.PutSymbol("T", false);
-    g.st_.PutSymbol("+", true);
-    g.st_.PutSymbol("(", true);
-    g.st_.PutSymbol(")", true);
-    g.st_.PutSymbol("n", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("E");
+    g.st_.PutSymbol("E'");
+    g.st_.PutSymbol("T");
+    g.st_.PutSymbol("+", "+");
+    g.st_.PutSymbol("(", "(");
+    g.st_.PutSymbol(")", ")");
+    g.st_.PutSymbol("n", "n");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
@@ -709,16 +709,16 @@ TEST(LL1__Test, AllFollowSets) {
 
 TEST(LL1__Test, AllFollowSets2) {
     Grammar g;
-    g.st_.PutSymbol("S", false);
-    g.st_.PutSymbol("A", false);
-    g.st_.PutSymbol("B", false);
-    g.st_.PutSymbol("C", false);
-    g.st_.PutSymbol("D", false);
-    g.st_.PutSymbol("a", true);
-    g.st_.PutSymbol("b", true);
-    g.st_.PutSymbol("c", true);
-    g.st_.PutSymbol("d", true);
-    g.st_.PutSymbol(g.st_.EPSILON_, true);
+    g.st_.PutSymbol("S");
+    g.st_.PutSymbol("A");
+    g.st_.PutSymbol("B");
+    g.st_.PutSymbol("C");
+    g.st_.PutSymbol("D");
+    g.st_.PutSymbol("a", "a");
+    g.st_.PutSymbol("b", "b");
+    g.st_.PutSymbol("c", "c");
+    g.st_.PutSymbol("d", "d");
+    g.st_.PutSymbol(g.st_.EPSILON_, g.st_.EPSILON_);
 
     g.axiom_ = "S";
 
