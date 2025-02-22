@@ -20,6 +20,10 @@ Shell::Shell() {
     commands["follow"] = [this](const std::vector<std::string>& args) {
         CmdFollow(args);
     };
+    commands["predsymbols"] = [this](const std::vector<std::string>& args) {
+        CmdPredictionSymbols(args);
+    };
+
 }
 
 void Shell::Run() {
@@ -146,6 +150,47 @@ void Shell::CmdFollow(const std::vector<std::string>& args) {
         } else {
             std::unordered_set<std::string> result {ll1.Follow(arg)};
             std::cout << GREEN "✔ " << RESET << "FOLLOW(" << arg << ") = ";
+            PrintSet(result);
+            std::cout << "\n";
+        }
+    } catch (const std::exception& e) {
+        std::cerr << RED << "pl-shell: " << e.what() << "\n" << RESET;
+        return;
+    }
+}
+
+void Shell::CmdPredictionSymbols(const std::vector<std::string>& args) {
+    if (grammar.g_.empty()) {
+        std::cout << RED << "pl-shell: no grammar was loaded. Load one with load <filename>.\n" << RESET;
+        return;
+    }
+    std::string ant;
+    std::string conseq;
+    bool verbose_mode = false;
+    po::options_description desc("Options");
+    desc.add_options()
+        ("help,h", "There is no docs, good luck :)")
+        ("antecedent", po::value<std::string>(&ant)->required())
+        ("consequent", po::value<std::string>(&conseq)->required())
+        ("verbose,v", po::bool_switch(&verbose_mode));
+    po::positional_options_description pos;
+    pos.add("antecedent", 1); 
+    pos.add("consequent", 2);
+    try {
+        po::variables_map vm;
+        po::store(po::command_line_parser(args)
+        .options(desc)
+        .positional(pos)
+        .run(), vm);
+        po::notify(vm);
+        std::vector<std::string> splitted {grammar.Split(conseq)};
+        if (verbose_mode) {
+            ll1.TeachPredictionSymbols(ant, splitted);
+            return;
+        } else {
+
+            std::unordered_set<std::string> result{ll1.PredictionSymbols(ant, splitted)};
+            std::cout << GREEN "✔ " << RESET << "PS(" << ant << " -> " << conseq << ") = ";
             PrintSet(result);
             std::cout << "\n";
         }
