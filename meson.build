@@ -8,7 +8,6 @@ executable('plshell',
     files(
         'src/main.cpp',
         'src/shell/shell.cpp',
-        'src/shell/commands.cpp',
         'src/parser/ll1_parser.cpp',
         'src/parser/slr1_parser.cpp',
         'src/parser/grammar.cpp',

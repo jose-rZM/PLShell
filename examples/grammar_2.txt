@@ -1,0 +1,11 @@
+terminal plus "+";
+terminal ap "(";
+terminal cp ")";
+terminal n "n";
+start with S;
+;
+S -> E $;
+E -> E plus T;
+E -> T;
+T -> ap E cp;
+T -> n;

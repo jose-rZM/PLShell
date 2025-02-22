@@ -379,6 +379,12 @@ void SLR1Parser::TeachClosure(std::unordered_set<Lr0Item>& items) {
 
     std::unordered_set<std::string> visited;
     TeachClosureUtil(items, items.size(), visited, 0);
+    std::cout << "Closure:\n";
+    for (const Lr0Item& item : items) {
+        std::cout << "  - ";
+        item.PrintItem();
+        std::cout << "\n";
+    }
 }
 
 void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>& items,
