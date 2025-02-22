@@ -22,6 +22,9 @@ Shell::Shell() {
     commands["predsymbols"] = [this](const std::vector<std::string>& args) {
         CmdPredictionSymbols(args);
     };
+    commands["ll1"] = [this](const std::vector<std::string>& args) {
+        CmdLL1Table(args);
+    };
 }
 
 void Shell::Run() {
@@ -223,6 +226,42 @@ void Shell::CmdPredictionSymbols(const std::vector<std::string>& args) {
     } catch (const std::exception& e) {
         std::cerr << RED << "pl-shell: " << e.what() << "\n" << RESET;
         return;
+    }
+}
+
+void Shell::CmdLL1Table(const std::vector<std::string>& args) {
+    if (args.size() > 1) {
+        std::cerr << RED
+                  << "pl-shell: only 1 argument at most can be given to ll1.\n"
+                  << RESET;
+        return;
+    }
+    bool verbose_mode = false;
+    if (!args.empty()) {
+        if (args[0] == "-v" || args[0] == "--verbose") {
+
+            verbose_mode = true;
+        } else {
+            std::cerr << RED
+                      << "pl-shell: unrecognized option in ll1 command. "
+                         "Options are: -v or --verbose.\n"
+                      << RESET;
+            return;
+        }
+    }
+    if (grammar.g_.empty()) {
+        std::cerr << RED
+                  << "pl-shell: no grammar was loaded. Load one with load "
+                     "<filename>.\n"
+                  << RESET;
+        return;
+    }
+    ll1.CreateLL1Table();
+    if (verbose_mode) {
+        ll1.TeachLL1Table();
+    } else {
+        std::cout << "LL(1) Table:\n";
+        ll1.PrintTable();
     }
 }
 

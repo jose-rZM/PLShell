@@ -180,6 +180,8 @@ class LL1Parser {
     void TeachPredictionSymbols(const std::string& antecedent,
                                 const production&  consequent);
 
+    void TeachLL1Table();
+
     /// @brief The LL(1) parsing table, mapping non-terminals and terminals to
     /// productions.
     ll1_table ll1_t_;

@@ -452,6 +452,74 @@ void LL1Parser::TeachPredictionSymbols(const std::string& antecedent,
     std::cout << "}\n";
 }
 
+void LL1Parser::TeachLL1Table() {
+    std::cout << "1. Process of building the LL(1) table:\n";
+    std::cout << "LL(1) table is built by defining all prediction symbols for "
+                 "each rule.\n";
+    size_t i = 1;
+    for (const auto& [nt, prods] : gr_.g_) {
+        for (const production& prod : prods) {
+            std::unordered_set<std::string> pred;
+            pred = PredictionSymbols(nt, prod);
+            std::cout << "\t" << i + ". PD( " << nt << " -> ";
+            for (const std::string& symbol : prod) {
+                std::cout << symbol << " ";
+            }
+            std::cout << ") = { ";
+            for (const std::string& symbol : pred) {
+                std::cout << symbol << " ";
+            }
+            std::cout << "}\n";
+        }
+    }
+    std::cout
+        << "2. A grammar meets LL condition if for every non terminal, none of "
+           "its productions have common prediction symbols.\nThat is, for "
+           "every rule A -> X and A -> Y, PS(A -> X) ∩ S(A -> Y) = ∅\n";
+    bool has_conflicts = false;
+    for (const auto& [nt, cols] : ll1_t_) {
+        for (const auto& col : cols) {
+            if (col.second.size() > 1) {
+                has_conflicts                       = true;
+                const std::vector<production> prods = col.second;
+                std::cout << "- Conflict under " << col.first << ":\n";
+                for (const production& prod : prods) {
+                    std::cout << "\tPD( " << nt << " -> ";
+                    for (const std::string& symbol : prod) {
+                        std::cout << symbol << " ";
+                    }
+                    std::cout << ")\n";
+                }
+            }
+        }
+    }
+    if (!has_conflicts) {
+        std::cout << "3. Prediction symbols sets does not overlap. Grammar is "
+                     "LL(1). LL(1) table is built by the following way.\n";
+        std::cout << "4. Have one row for each non terminal symbol ("
+                  << gr_.st_.non_terminals_.size()
+                  << " rows), and one column for each terminal plus "
+                  << gr_.st_.EOL_ << " (" << gr_.st_.terminals_.size()
+                  << " columns).\n";
+        std::cout
+            << "5. Place α in the cell (A,β) if β ∈ PS(A ->α), empty if not.\n";
+        for (const auto& [nt, cols] : ll1_t_) {
+            for (const auto& col : cols) {
+                std::cout << "\t- ll1(" << nt << ", " << col.first << ") = ";
+                for (const std::string& symbol : col.second.at(0)) {
+                    std::cout << symbol << " ";
+                }
+                std::cout << "\n";
+            }
+        }
+        std::cout << "6. Final LL(1) table:\n";
+        PrintTable();
+    } else {
+        std::cout << "3. Since there is at least two sets with common symbols "
+                     "under the same non terminal, grammar is not LL(1).\n";
+    }
+}
+
 void LL1Parser::PrintTable() {
     using namespace tabulate;
     Table table;
