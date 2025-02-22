@@ -29,7 +29,7 @@ class Shell {
     LL1Parser  ll1;
     SLR1Parser slr1;
 
-    std::unordered_map<std::string,
+    static std::unordered_map<std::string,
                        std::function<void(const std::vector<std::string>&)>>
                 commands;
     bool        running = true;
@@ -37,6 +37,8 @@ class Shell {
 
     void ExecuteCommand(const std::string& input);
     void PrintHistory();
+    static char** ShellCompletion(const char* text, int start, int end);
+    static char* CommandGenerator(const char* text, int state);
     void CmdLoad(const std::vector<std::string>& args);
     void CmdGDebug();
     void CmdFirst(const std::vector<std::string>& args);

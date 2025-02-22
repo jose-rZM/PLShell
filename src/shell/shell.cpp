@@ -6,6 +6,8 @@
 #define BLUE "\033[34m"
 #define RESET "\033[0m"
 
+std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>> Shell::commands;
+
 Shell::Shell() {
     commands["load"] = [this](const std::vector<std::string>& args) {
         CmdLoad(args);
@@ -40,9 +42,11 @@ Shell::Shell() {
 
     std::signal(SIGINT, Shell::SignalHandler);
     std::signal(SIGTSTP, Shell::SignalHandler);
+
 }
 
 void Shell::Run() {
+    rl_attempted_completion_function = ShellCompletion;
     while (running) {
         char* input = readline("\033[32mpl-shell> \033[0m");
         if (!input) {
@@ -87,6 +91,32 @@ void Shell::PrintHistory() {
     } else {
         std::cerr << RED << "pl-shell: there is no history.\n" << RESET;
     }
+}
+
+char* Shell::CommandGenerator(const char* text, int state) {
+    static std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>>::iterator it;
+    static size_t len;
+    const char* name;
+
+    if (!state) {
+        it = Shell::commands.begin();
+        len = strlen(text);
+    }
+
+    while (it != Shell::commands.end()) {
+        name = it->first.c_str();
+        ++it;
+
+        if (strncmp(name, text, len) == 0) {
+            return strdup(name);
+        }
+    }
+    return nullptr;
+}
+
+char** Shell::ShellCompletion(const char* text, int start, int end) {
+    rl_attempted_completion_over = 1;
+    return rl_completion_matches(text, CommandGenerator);
 }
 
 void Shell::SignalHandler(int signum) {
