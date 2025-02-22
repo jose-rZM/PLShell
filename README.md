@@ -10,6 +10,7 @@ Designed for both **analysis and education**, it provides **step-by-step explana
 - `follow`: Compute the Follow set of a given non-terminal.
 - `predsymbols`: Compute the Prediction Symbols of a rule.
 - `ll1`: Checks whether the grammar is LL(1) and display the table.
+
 ✅ **Coming soon: Generate SLR(1) automaton** and visualize states  
 ✅ **Coming soon: Parse and validate input strings**  
 ✅ **Verbose mode: Add `-v` or `--verbose` to any command to get a step-by-step explanation, useful for learning purposes.**
