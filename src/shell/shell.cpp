@@ -184,11 +184,18 @@ void Shell::CmdPredictionSymbols(const std::vector<std::string>& args) {
         .run(), vm);
         po::notify(vm);
         std::vector<std::string> splitted {grammar.Split(conseq)};
+        if (splitted.empty() || grammar.g_.find(ant) == grammar.g_.end() || std::find(grammar.g_[ant].begin(), grammar.g_[ant].end(), splitted) == grammar.g_[ant].end()) {
+                std::cerr << RED << "pl-shell: rule does not exist.\n" << RESET;
+                return;
+            }
         if (verbose_mode) {
             ll1.TeachPredictionSymbols(ant, splitted);
             return;
         } else {
-
+            if (grammar.g_.find(ant) == grammar.g_.end() || std::find(grammar.g_[ant].begin(), grammar.g_[ant].end(), splitted) == grammar.g_[ant].end()) {
+                std::cerr << RED << "pl-shell: rule does not exist.\n" << RESET;
+                return;
+            }
             std::unordered_set<std::string> result{ll1.PredictionSymbols(ant, splitted)};
             std::cout << GREEN "✔ " << RESET << "PS(" << ant << " -> " << conseq << ") = ";
             PrintSet(result);
