@@ -34,6 +34,9 @@ Shell::Shell() {
     commands["exit"] = [this](const std::vector<std::string>& args) {
         running = false;
     };
+    commands["history"] = [this](const std::vector<std::string>& args) {
+        PrintHistory();
+    };
 
     std::signal(SIGINT, Shell::SignalHandler);
     std::signal(SIGTSTP, Shell::SignalHandler);
@@ -73,6 +76,17 @@ void Shell::ExecuteCommand(const std::string& input) {
     }
     tokens.erase(tokens.begin());
     cmd->second(tokens);
+}
+
+void Shell::PrintHistory() {
+    HIST_ENTRY** hist_list = history_list();
+    if (hist_list) {
+        for (size_t i = 0; hist_list[i]; ++i) {
+            std::cout << i + history_base << " " << hist_list[i]->line << "\n";
+        }
+    } else {
+        std::cerr << RED << "pl-shell: there is no history.\n" << RESET;
+    }
 }
 
 void Shell::SignalHandler(int signum) {

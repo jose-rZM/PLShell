@@ -36,6 +36,7 @@ class Shell {
     static void SignalHandler(int signum);
 
     void ExecuteCommand(const std::string& input);
+    void PrintHistory();
     void CmdLoad(const std::vector<std::string>& args);
     void CmdGDebug();
     void CmdFirst(const std::vector<std::string>& args);
