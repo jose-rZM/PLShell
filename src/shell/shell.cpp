@@ -1,10 +1,13 @@
 #include "../../include/shell.hpp"
 #include <unordered_set>
 
-#define GREEN "\033[32m"
-#define RED "\033[31m"
-#define BLUE "\033[34m"
-#define RESET "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define RESET   "\033[0m"
 
 std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>> Shell::commands;
 
@@ -34,7 +37,7 @@ Shell::Shell() {
         CmdClosure(args);
     };
     commands["exit"] = [this](const std::vector<std::string>& args) {
-        running = false;
+        CmdExit();
     };
     commands["history"] = [this](const std::vector<std::string>& args) {
         PrintHistory();
@@ -52,6 +55,14 @@ Shell::Shell() {
 }
 
 void Shell::Run() {
+
+    std::cout << GREEN << "========================================\n";
+    std::cout << " Welcome to " << BLUE << "PLShell" << GREEN << "!\n";
+    std::cout << " Version: " << YELLOW << "1.0" << GREEN << "\n";
+    std::cout << " Created by: " << MAGENTA << "jose-rZM" << GREEN << " @ GitHub\n";
+    std::cout << GREEN << " Type " << BLUE << "'help'" << GREEN << " for a list of commands.\n";
+    std::cout << "========================================\n" << RESET;
+
     rl_attempted_completion_function = ShellCompletion;
     while (running) {
         char* input = readline("\033[32mpl-shell> \033[0m");
@@ -66,7 +77,7 @@ void Shell::Run() {
             ExecuteCommand(command);
         }
     }
-    std::cout << "\nBye!\n";
+    std::cout << "Bye!\n";
 }
 
 void Shell::ExecuteCommand(const std::string& input) {
@@ -130,6 +141,15 @@ void Shell::SignalHandler(int signum) {
         std::cout << RED << "\nType 'exit' to quit.\n"
                   << GREEN << "pl-shell> " << RESET;
         std::cout.flush();
+    }
+}
+
+void Shell::CmdExit() {
+    std::cout << "Are you sure you want to exit? (y/n): ";
+    char response;
+    std::cin >> response;
+    if (response == 'y' || response == 'Y') {
+        running = false;
     }
 }
 
