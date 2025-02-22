@@ -1,6 +1,7 @@
 project('plshell', 'cpp', version: '1.0.0', default_options: ['cpp_std=c++20', 'buildtype=debug'])
 
 boost_dep = dependency('boost', modules: ['program_options'], static: true)
+readline_dep = dependency('readline', required: true)
 
 gtest_dep = dependency('gtest', required: false)
 
@@ -15,7 +16,7 @@ executable('plshell',
         'src/parser/symbol_table.cpp',
         'src/parser/grammar.cpp'
     ),
-    dependencies: [boost_dep]
+    dependencies: [boost_dep, readline_dep]
 )
 
 # Tests

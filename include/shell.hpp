@@ -1,12 +1,16 @@
 #pragma once
 
 #include <boost/program_options.hpp>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
+#include <readline/history.h>
+#include <readline/readline.h>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <csignal>
 
 #include "grammar.hpp"
 #include "ll1_parser.hpp"
@@ -27,8 +31,8 @@ class Shell {
 
     std::unordered_map<std::string,
                        std::function<void(const std::vector<std::string>&)>>
-         commands;
-    bool running = true;
+                commands;
+    bool        running = true;
     static void SignalHandler(int signum);
 
     void ExecuteCommand(const std::string& input);

@@ -387,16 +387,17 @@ void SLR1Parser::TeachClosure(std::unordered_set<Lr0Item>& items) {
     }
 }
 
-void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>& items,
-                                  unsigned int size,
+void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>&     items,
+                                  unsigned int                     size,
                                   std::unordered_set<std::string>& visited,
-                                  int depth) {
+                                  int                              depth) {
     // Indent based on depth for better readability
     std::string indent(depth * 2, ' ');
 
     std::unordered_set<Lr0Item> newItems;
 
-    std::cout << indent << "- Checking items for non-terminals after the dot:\n";
+    std::cout << indent
+              << "- Checking items for non-terminals after the dot:\n";
     for (const auto& item : items) {
         std::string next = item.NextToDot();
         if (next == gr_.st_.EPSILON_) {
@@ -408,9 +409,13 @@ void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>& items,
         std::cout << "\n";
 
         if (!gr_.st_.IsTerminal(next) &&
-            std::find(visited.cbegin(), visited.cend(), next) == visited.cend()) {
-            std::cout << indent << "    - Found non-terminal after the dot: " << next << "\n";
-            std::cout << indent << "    - Adding all productions of " << next << " with the dot at the beginning:\n";
+            std::find(visited.cbegin(), visited.cend(), next) ==
+                visited.cend()) {
+            std::cout << indent
+                      << "    - Found non-terminal after the dot: " << next
+                      << "\n";
+            std::cout << indent << "    - Adding all productions of " << next
+                      << " with the dot at the beginning:\n";
 
             const std::vector<production>& rules = gr_.g_.at(next);
             for (const auto& rule : rules) {
@@ -429,10 +434,12 @@ void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>& items,
     items.insert(newItems.begin(), newItems.end());
 
     if (size != items.size()) {
-        std::cout << indent << "- New items were added. Repeating the process...\n";
+        std::cout << indent
+                  << "- New items were added. Repeating the process...\n";
         TeachClosureUtil(items, items.size(), visited, depth + 1);
     } else {
-        std::cout << indent << "- No new items were added. Closure is complete.\n";
+        std::cout << indent
+                  << "- No new items were added. Closure is complete.\n";
     }
 }
 
