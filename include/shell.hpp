@@ -1,9 +1,12 @@
+#pragma once
+
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <csignal>
 
 #include "grammar.hpp"
 #include "ll1_parser.hpp"
@@ -26,6 +29,7 @@ class Shell {
                        std::function<void(const std::vector<std::string>&)>>
          commands;
     bool running = true;
+    static void SignalHandler(int signum);
 
     void ExecuteCommand(const std::string& input);
     void CmdLoad(const std::vector<std::string>& args);

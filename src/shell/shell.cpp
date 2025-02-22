@@ -31,7 +31,10 @@ Shell::Shell() {
     commands["closure"] = [this](const std::vector<std::string>& args) {
         CmdClosure(args);
     };
+    commands["exit"] = [this](const std::vector<std::string>& args) { running = false; };
 
+    std::signal(SIGINT, Shell::SignalHandler);
+    std::signal(SIGTSTP, Shell::SignalHandler);
 }
 
 void Shell::Run() {
@@ -42,6 +45,7 @@ void Shell::Run() {
             break;
         ExecuteCommand(input);
     }
+    std::cout << "\nBye!\n";
 }
 
 void Shell::ExecuteCommand(const std::string& input) {
@@ -61,6 +65,13 @@ void Shell::ExecuteCommand(const std::string& input) {
     }
     tokens.erase(tokens.begin());
     cmd->second(tokens);
+}
+
+void Shell::SignalHandler(int signum) {
+    if (signum == SIGINT || signum == SIGTSTP) {
+        std::cout << RED << "\nType 'exit' to quit.\n" << GREEN << "pl-shell> " << RESET;
+        std::cout.flush();
+    }
 }
 
 void Shell::CmdLoad(const std::vector<std::string>& args) {
