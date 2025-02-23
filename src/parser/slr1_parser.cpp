@@ -448,9 +448,9 @@ void SLR1Parser::TeachDeltaFunction(const std::unordered_set<Lr0Item>& items,
     std::cout << "Let I be:\n";
     PrintItems(items);
     std::cout << "Process of finding δ(I, " << symbol << "):\n";
-    std::cout << "1. Seach for rules with " << symbol
+    std::cout << "1. Search for rules with " << symbol
               << " next to the dot. That is, items of the form α·" << symbol
-              << " β\n";
+              << "β\n";
     std::unordered_set<Lr0Item> filtered;
     std::for_each(items.begin(), items.end(), [&](const Lr0Item& item) -> void {
         std::string next = item.NextToDot();
