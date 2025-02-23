@@ -420,7 +420,6 @@ void Shell::CmdAllLRItems(const std::vector<std::string>& args) {
     bool verbose_mode = false;
     if (!args.empty()) {
         if (args[0] == "-v" || args[0] == "--verbose") {
-
             verbose_mode = true;
         } else {
             std::cerr << RED
@@ -534,7 +533,17 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
                          grammar.st_.EPSILON_, grammar.st_.EOL_};
             items.insert(item);
         }
-        slr1.TeachClosure(items);
+        if (verbose_mode) {
+            slr1.TeachClosure(items);
+        } else {
+            slr1.Closure(items);
+            std::cout << "Closure:\n";
+            for (const Lr0Item& lr : items) {
+                std::cout << "  - ";
+                lr.PrintItem();
+                std::cout << "\n";
+            }
+        }
     } catch (const std::exception& e) {
         std::cerr << RED << "pl-shell: " << e.what() << RESET << "\n";
     }
