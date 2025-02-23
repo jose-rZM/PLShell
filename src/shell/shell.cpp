@@ -139,7 +139,10 @@ char* Shell::CommandGenerator(const char* text, int state) {
 
 char** Shell::ShellCompletion(const char* text, int start, int end) {
     rl_attempted_completion_over = 1;
-    return rl_completion_matches(text, CommandGenerator);
+    if (start == 0) {
+        return rl_completion_matches(text, CommandGenerator);
+    }
+    return rl_completion_matches(text, rl_filename_completion_function);
 }
 
 void Shell::SuggestCommand(const std::string& input) {
