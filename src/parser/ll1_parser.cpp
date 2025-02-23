@@ -194,7 +194,9 @@ void LL1Parser::TeachFirst(const std::vector<std::string>& symbols) {
     std::cout << "):\n";
 
     std::unordered_set<std::string> first_set;
-    TeachFirstUtil(symbols, first_set, 0);
+    std::unordered_set<std::string>
+        processing; // Track non-terminals being processed
+    TeachFirstUtil(symbols, first_set, 0, processing);
 
     // Display the final First set
     std::cout << "Final First set: { ";
@@ -206,7 +208,8 @@ void LL1Parser::TeachFirst(const std::vector<std::string>& symbols) {
 
 void LL1Parser::TeachFirstUtil(const std::vector<std::string>&  symbols,
                                std::unordered_set<std::string>& first_set,
-                               int                              depth) {
+                               int                              depth,
+                               std::unordered_set<std::string>& processing) {
     // Base case: If all symbols are processed, return
     if (symbols.empty()) {
         return;
@@ -239,6 +242,17 @@ void LL1Parser::TeachFirstUtil(const std::vector<std::string>&  symbols,
     // Case 2: Current symbol is a non-terminal
     std::cout << indent << "- Deriving non-terminal: " << current_symbol
               << "\n";
+
+    // Check if the non-terminal is already being processed (to avoid cycles)
+    if (processing.find(current_symbol) != processing.end()) {
+        std::cout << indent << "  - Skipping " << current_symbol
+                  << " (already being processed to avoid infinite recursion)\n";
+        return;
+    }
+
+    // Mark the non-terminal as being processed
+    processing.insert(current_symbol);
+
     const auto& productions = gr_.g_.at(current_symbol);
     for (const auto& prod : productions) {
         std::cout << indent << "  Using production: " << current_symbol
@@ -252,7 +266,7 @@ void LL1Parser::TeachFirstUtil(const std::vector<std::string>&  symbols,
         std::vector<std::string> new_symbols = prod;
         new_symbols.insert(new_symbols.end(), remaining_symbols.begin(),
                            remaining_symbols.end());
-        TeachFirstUtil(new_symbols, first_set, depth + 1);
+        TeachFirstUtil(new_symbols, first_set, depth + 1, processing);
 
         // Check if ε is in First(prod)
         bool has_epsilon =
@@ -267,9 +281,12 @@ void LL1Parser::TeachFirstUtil(const std::vector<std::string>&  symbols,
                 std::cout << symbol << " ";
             }
             std::cout << "\n";
-            TeachFirstUtil(remaining_symbols, first_set, depth + 1);
+            TeachFirstUtil(remaining_symbols, first_set, depth + 1, processing);
         }
     }
+
+    // Unmark the non-terminal as it is no longer being processed
+    processing.erase(current_symbol);
 
     // Display the current First set
     std::cout << indent << "Current First set: { ";

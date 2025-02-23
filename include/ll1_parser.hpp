@@ -175,7 +175,8 @@ class LL1Parser {
 
     void TeachFirst(const std::vector<std::string>& symbols);
     void TeachFirstUtil(const std::vector<std::string>&  symbols,
-                        std::unordered_set<std::string>& first_set, int depth);
+                        std::unordered_set<std::string>& first_set, int depth,
+                        std::unordered_set<std::string>& processing);
     void TeachFollow(const std::string& non_terminal);
     void TeachPredictionSymbols(const std::string& antecedent,
                                 const production&  consequent);

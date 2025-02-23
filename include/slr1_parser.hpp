@@ -267,6 +267,8 @@ class SLR1Parser {
     void TeachClosure(std::unordered_set<Lr0Item>& items);
     void TeachClosureUtil(std::unordered_set<Lr0Item>& items, unsigned int size,
                           std::unordered_set<std::string>& visited, int depth);
+    void TeachDeltaFunction(std::unordered_set<Lr0Item>& items,
+                            const std::string&           symbol);
     void PrintItems(const std::unordered_set<Lr0Item>& items);
 
     /// @brief The grammar being processed by the parser.
