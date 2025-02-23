@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <boost/program_options.hpp>
 #include <csignal>
 #include <cstdio>
@@ -12,6 +11,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <array>
 
 #include "grammar.hpp"
 #include "ll1_parser.hpp"
@@ -52,6 +52,7 @@ class Shell {
     void          CmdLL1Table(const std::vector<std::string>& args);
     void          CmdAllLRItems(const std::vector<std::string>& args);
     void          CmdClosure(const std::vector<std::string>& args);
+    void CmdDelta(const std::vector<std::string>& args);
     void          PrintSet(const std::unordered_set<std::string>& set);
-    size_t LevenshteinDistance(const std::string& w1, const std::string& w2);
+    size_t          LevenshteinDistance(const std::string& w1, const std::string& w2);
 };

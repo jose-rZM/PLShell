@@ -443,7 +443,7 @@ void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>&     items,
     }
 }
 
-void SLR1Parser::TeachDeltaFunction(std::unordered_set<Lr0Item>& items,
+void SLR1Parser::TeachDeltaFunction(const std::unordered_set<Lr0Item>& items,
                                     const std::string&           symbol) {
     std::cout << "Let I be:\n";
     PrintItems(items);
@@ -464,10 +464,18 @@ void SLR1Parser::TeachDeltaFunction(std::unordered_set<Lr0Item>& items,
     } else {
         std::cout << "2. Items found. Let J be:\n";
         PrintItems(filtered);
-        std::cout << "3. δ(I, " << symbol << ") = CLOSURE(J)\n";
-        std::cout << "4. Closure of J:\n";
-        Closure(filtered);
-        PrintItems(filtered);
+        std::cout << "3. Advance the dot one position:\n";
+        std::unordered_set<Lr0Item> advanced;
+        for (const Lr0Item& item : filtered) {
+            Lr0Item new_item = item;
+            new_item.AdvanceDot();
+            advanced.insert(new_item);
+        }
+        PrintItems(advanced);
+        std::cout << "4. δ(I, " << symbol << ") = CLOSURE(J)\n";
+        std::cout << "5. Closure of J:\n";
+        Closure(advanced);
+        PrintItems(advanced);
     }
 }
 

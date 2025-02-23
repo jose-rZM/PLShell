@@ -38,6 +38,9 @@ Shell::Shell() {
     commands["closure"] = [this](const std::vector<std::string>& args) {
         CmdClosure(args);
     };
+    commands["delta"] = [this](const std::vector<std::string>& args) {
+        CmdDelta(args);
+    };
     commands["exit"] = [this](const std::vector<std::string>& args) {
         CmdExit();
     };
@@ -550,6 +553,90 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
     } catch (const std::exception& e) {
         std::cerr << RED << "pl-shell: " << e.what() << RESET << "\n";
     }
+}
+
+void Shell::CmdDelta(const std::vector<std::string>& args) {
+if (grammar.g_.empty()) {
+        std::cout << RED
+                  << "pl-shell: no grammar was loaded. Load one with load "
+                     "<filename>.\n"
+                  << RESET;
+        return;
+    }
+
+    bool        verbose_mode = false;
+    std::string rules_str;
+    std::string symbol;
+
+    po::options_description desc("Options");
+    desc.add_options()("help,h", "There is no docs, good luck :)")(
+        "rules", po::value<std::string>(&rules_str)->required(), "Grammar rules (comma-separated)")
+        ("symbol", po::value<std::string>(&symbol)->required(), "Symbol to consume")
+        ("verbose,v",
+                                           po::bool_switch(&verbose_mode));
+            
+    po::positional_options_description pos;
+    pos.add("rules", 1);
+    pos.add("symbol", 2);
+    try {
+        po::variables_map vm;
+        po::store(
+            po::command_line_parser(args).options(desc).positional(pos).run(),
+            vm);
+        po::notify(vm);
+
+        std::stringstream           ss(rules_str);
+        char                        del = ',';
+        std::string                 token;
+        std::unordered_set<Lr0Item> items;
+        while (std::getline(ss, token, del)) {
+            size_t arrow = token.find("->");
+            if (arrow == std::string::npos) {
+                std::cerr << RED << "pl-shell: invalid rule format: " << token
+                          << RESET << "\n";
+                return;
+            }
+            std::string antecedent = token.substr(0, arrow);
+            std::string consequent = token.substr(arrow + 2);
+
+            size_t dot = consequent.find('.');
+            if (dot == std::string::npos) {
+                std::cerr << RED << "pl-shell: dot not found in: " << token
+                          << RESET << "\n";
+                return;
+            }
+            std::string before_dot = consequent.substr(0, dot);
+            std::string after_dot  = consequent.substr(dot + 1);
+
+            std::vector<std::string> splitted_before_dot{
+                grammar.Split(before_dot)};
+            std::vector<std::string> splitted_after_dot{
+                grammar.Split(after_dot)};
+
+            std::vector<std::string> splitted{splitted_before_dot.begin(),
+                                              splitted_before_dot.end()};
+            splitted.insert(splitted.end(), splitted_after_dot.begin(),
+                            splitted_after_dot.end());
+            size_t  dot_idx = splitted_before_dot.size();
+            Lr0Item item{antecedent, splitted, (unsigned int) dot_idx,
+                         grammar.st_.EPSILON_, grammar.st_.EOL_};
+            items.insert(item);
+        }
+        if (verbose_mode) {
+            slr1.TeachDeltaFunction(items, symbol);
+        } else {
+            slr1.Closure(items);
+            std::cout << "Closure:\n";
+            for (const Lr0Item& lr : items) {
+                std::cout << "  - ";
+                lr.PrintItem();
+                std::cout << "\n";
+            }
+        }
+    } catch (const std::exception& e) {
+        std::cerr << RED << "pl-shell: " << e.what() << RESET << "\n";
+    }
+
 }
 
 void Shell::PrintSet(const std::unordered_set<std::string>& set) {
