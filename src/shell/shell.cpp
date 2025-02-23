@@ -96,6 +96,7 @@ void Shell::ExecuteCommand(const std::string& input) {
     auto cmd = commands.find(tokens[0]);
     if (cmd == commands.end()) {
         std::cout << RED << "Command not recognized.\n" << RESET;
+        SuggestCommand(tokens[0]);
         return;
     }
     tokens.erase(tokens.begin());
@@ -139,6 +140,30 @@ char* Shell::CommandGenerator(const char* text, int state) {
 char** Shell::ShellCompletion(const char* text, int start, int end) {
     rl_attempted_completion_over = 1;
     return rl_completion_matches(text, CommandGenerator);
+}
+
+void Shell::SuggestCommand(const std::string& input) {
+    std::string closest_match;
+    size_t      min_distance = std::numeric_limits<size_t>::max();
+    bool        has_prefix   = false;
+
+    for (const auto& cmd : Shell::commands) {
+        if (cmd.first.find(input) == 0) {
+            closest_match = cmd.first;
+            has_prefix    = true;
+            break;
+        }
+
+        size_t distance = LevenshteinDistance(cmd.first, input);
+        if (distance < min_distance) {
+            min_distance  = distance;
+            closest_match = cmd.first;
+        }
+    }
+    if (has_prefix || min_distance <= 2) {
+        std::cout << YELLOW << "Did you mean '" << closest_match << "'?\n"
+                  << RESET;
+    }
 }
 
 void Shell::SignalHandler(int signum) {
@@ -521,4 +546,32 @@ void Shell::PrintSet(const std::unordered_set<std::string>& set) {
         std::cout << str << " ";
     }
     std::cout << "}";
+}
+
+size_t Shell::LevenshteinDistance(const std::string& w1,
+                                  const std::string& w2) {
+    size_t size_w1 = w1.size();
+    size_t size_w2 = w2.size();
+    int    dp[size_w1 + 1][size_w2 + 1];
+
+    if (size_w1 == 0)
+        return size_w2;
+    else if (size_w2 == 0)
+        return size_w1;
+
+    for (size_t i = 0; i <= size_w1; ++i) {
+        dp[i][0] = i;
+    }
+    for (size_t i = 0; i <= size_w2; ++i) {
+        dp[0][i] = i;
+    }
+
+    for (size_t i = 1; i <= size_w1; ++i) {
+        for (size_t j = 1; j <= size_w2; ++j) {
+            int cost = w1[i - 1] == w2[j - 1] ? 0 : 1;
+            dp[i][j] = std::min(std::min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                                dp[i - 1][j - 1] + cost);
+        }
+    }
+    return dp[size_w1][size_w2];
 }

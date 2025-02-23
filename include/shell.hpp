@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <boost/program_options.hpp>
 #include <csignal>
 #include <cstdio>
@@ -39,6 +40,7 @@ class Shell {
     void          PrintHistory();
     static char** ShellCompletion(const char* text, int start, int end);
     static char*  CommandGenerator(const char* text, int state);
+    void          SuggestCommand(const std::string& input);
     void          CmdExit();
     void          CmdHelp();
     void          CmdClear();
@@ -51,4 +53,5 @@ class Shell {
     void          CmdAllLRItems(const std::vector<std::string>& args);
     void          CmdClosure(const std::vector<std::string>& args);
     void          PrintSet(const std::unordered_set<std::string>& set);
+    size_t LevenshteinDistance(const std::string& w1, const std::string& w2);
 };
