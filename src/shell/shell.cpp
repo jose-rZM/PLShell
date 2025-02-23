@@ -1,15 +1,17 @@
 #include "../../include/shell.hpp"
 #include <unordered_set>
 
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
 #define MAGENTA "\033[35m"
-#define CYAN    "\033[36m"
-#define RESET   "\033[0m"
+#define CYAN "\033[36m"
+#define RESET "\033[0m"
 
-std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>> Shell::commands;
+std::unordered_map<std::string,
+                   std::function<void(const std::vector<std::string>&)>>
+    Shell::commands;
 
 Shell::Shell() {
     commands["load"] = [this](const std::vector<std::string>& args) {
@@ -51,7 +53,6 @@ Shell::Shell() {
 
     std::signal(SIGINT, Shell::SignalHandler);
     std::signal(SIGTSTP, Shell::SignalHandler);
-
 }
 
 void Shell::Run() {
@@ -59,8 +60,10 @@ void Shell::Run() {
     std::cout << GREEN << "========================================\n";
     std::cout << " Welcome to " << BLUE << "PLShell" << GREEN << "!\n";
     std::cout << " Version: " << YELLOW << "1.0" << GREEN << "\n";
-    std::cout << " Created by: " << MAGENTA << "jose-rZM" << GREEN << " @ GitHub\n";
-    std::cout << GREEN << " Type " << BLUE << "'help'" << GREEN << " for a list of commands.\n";
+    std::cout << " Created by: " << MAGENTA << "jose-rZM" << GREEN
+              << " @ GitHub\n";
+    std::cout << GREEN << " Type " << BLUE << "'help'" << GREEN
+              << " for a list of commands.\n";
     std::cout << "========================================\n" << RESET;
 
     rl_attempted_completion_function = ShellCompletion;
@@ -111,12 +114,14 @@ void Shell::PrintHistory() {
 }
 
 char* Shell::CommandGenerator(const char* text, int state) {
-    static std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>>::iterator it;
-    static size_t len;
-    const char* name;
+    static std::unordered_map<
+        std::string,
+        std::function<void(const std::vector<std::string>&)>>::iterator it;
+    static size_t                                                       len;
+    const char*                                                         name;
 
     if (!state) {
-        it = Shell::commands.begin();
+        it  = Shell::commands.begin();
         len = strlen(text);
     }
 
@@ -499,9 +504,9 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
                                               splitted_before_dot.end()};
             splitted.insert(splitted.end(), splitted_after_dot.begin(),
                             splitted_after_dot.end());
-            size_t dot_idx = splitted_before_dot.size();
-            Lr0Item item{antecedent, splitted, (unsigned int) dot_idx, grammar.st_.EPSILON_,
-                         grammar.st_.EOL_};
+            size_t  dot_idx = splitted_before_dot.size();
+            Lr0Item item{antecedent, splitted, (unsigned int) dot_idx,
+                         grammar.st_.EPSILON_, grammar.st_.EOL_};
             items.insert(item);
         }
         slr1.TeachClosure(items);
