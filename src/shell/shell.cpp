@@ -235,9 +235,9 @@ void Shell::CmdGDebug() {
                   << RESET;
         return;
     }
-    grammar.Debug();
-    std::cout << "\nSymbol Table:\nn";
+    std::cout << "Symbol Table:\nn";
     grammar.st_.Debug();
+    grammar.Debug();
 }
 
 void Shell::CmdFirst(const std::vector<std::string>& args) {
