@@ -199,9 +199,11 @@ void Shell::CmdHelp() {
     std::cout << "  ll1          - Generate LL(1) parsing table\n";
     std::cout << "  allitems     - List all LR(0) items\n";
     std::cout << "  closure      - Compute closure of a set of items\n";
+    std::cout << "  delta        - Compute delta function of a set of items with one symbol\n";
     std::cout << "  exit         - Exit the shell\n";
     std::cout << "  history      - Show command history\n";
     std::cout << "  help         - Show this help message\n";
+    std::cout << "  clear        - Clear the screen\n";
 }
 
 void Shell::CmdClear() {
