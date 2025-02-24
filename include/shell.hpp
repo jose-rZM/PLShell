@@ -53,6 +53,7 @@ class Shell {
     void          CmdAllLRItems(const std::vector<std::string>& args);
     void          CmdClosure(const std::vector<std::string>& args);
     void          CmdDelta(const std::vector<std::string>& args);
+    void CmdCanonicalCollection(const std::vector<std::string>& args);
     void          PrintSet(const std::unordered_set<std::string>& set);
     size_t LevenshteinDistance(const std::string& w1, const std::string& w2);
 };

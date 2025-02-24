@@ -503,6 +503,82 @@ SLR1Parser::Delta(const std::unordered_set<Lr0Item>& items,
     }
 }
 
+void SLR1Parser::TeachCanonicalCollection() {
+    std::cout << "Process of constructing the canonical collection of sets of LR(0) items:\n";
+
+    // Step 1: Initialize the initial state with the start symbol's production
+    Lr0Item init(gr_.axiom_, gr_.g_.at(gr_.axiom_)[0], gr_.st_.EPSILON_, gr_.st_.EOL_);
+    unsigned int id = 0;
+    std::unordered_set<state> canonical_collection;
+    std::unordered_set<state> to_add;
+    std::unordered_set<Lr0Item> current{init};
+
+    std::cout << "1. Compute the closure of the initial item:\n";
+    std::cout << "   - Initial item: ";
+    init.PrintItem();
+    std::cout << "\n";
+    std::cout << "   - Closure:\n";
+    Closure(current);
+    PrintItems(current);
+
+    // Create the initial state and add it to the canonical collection
+    state qi;
+    qi.id_ = id++;
+    qi.items_ = current;
+    canonical_collection.insert(qi);
+
+    bool changed;
+    do {
+        changed = false;
+        std::cout << "\n2. For each set of items in the collection:\n";
+
+        // Iterate over each state in the canonical collection
+        for (const state& st : canonical_collection) {
+            std::cout << "   - Current set of items (I):\n";
+            PrintItems(st.items_);
+
+            std::cout << "   3. For each grammar symbol X, compute δ(I, X) and add it to the collection if it's not empty and not already present:\n";
+
+            // Iterate over all grammar symbols (terminals and non-terminals)
+            for (const auto& [nt, _] : gr_.st_.st_) {
+                if (nt == gr_.st_.EOL_ || nt == gr_.st_.EPSILON_) {
+                    continue;
+                }
+                std::cout << "      - Computing δ(I, " << nt << "):\n";
+
+                // Compute δ(I, X)
+                std::unordered_set<Lr0Item> delta_ret = Delta(st.items_, nt);
+
+                if (delta_ret.empty()) {
+                    std::cout << "        - δ(I, " << nt << ") is empty.\n";
+                } else {
+                    std::cout << "        - δ(I, " << nt << ") = {\n";
+                    PrintItems(delta_ret);
+                    std::cout << "        }\n";
+
+                    // Create a new state for δ(I, X)
+                    qi.id_ = id;
+                    qi.items_ = delta_ret;
+
+                    // Add the new state to the canonical collection if it's not already present
+                    if (canonical_collection.find(qi) != canonical_collection.end()) {
+                        std::cout << "        - This set is already in the collection. Skipping.\n";
+                    } else {
+                        to_add.insert(qi);
+                        std::cout << "        - This set is added to the collection as state " << id << ".\n";
+                        id++;
+                        changed = true;
+                    }
+                }
+            }
+            canonical_collection.insert(to_add.begin(), to_add.end());
+            to_add.clear();
+        }
+    } while (changed);
+
+    std::cout << "\n4. Canonical collection construction complete. Total states: " << canonical_collection.size() << "\n";
+}
+
 void SLR1Parser::PrintItems(const std::unordered_set<Lr0Item>& items) {
     for (const auto& item : items) {
         std::cout << "  - ";

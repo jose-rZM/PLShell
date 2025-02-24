@@ -41,6 +41,9 @@ Shell::Shell() {
     commands["delta"] = [this](const std::vector<std::string>& args) {
         CmdDelta(args);
     };
+    commands["collection"] = [this](const std::vector<std::string>& args) {
+        CmdCanonicalCollection(args);
+    };
     commands["exit"] = [this](const std::vector<std::string>& args) {
         CmdExit();
     };
@@ -199,7 +202,8 @@ void Shell::CmdHelp() {
     std::cout << "  ll1          - Generate LL(1) parsing table\n";
     std::cout << "  allitems     - List all LR(0) items\n";
     std::cout << "  closure      - Compute closure of a set of items\n";
-    std::cout << "  delta        - Compute delta function of a set of items with one symbol\n";
+    std::cout << "  delta        - Compute delta function of a set of items "
+                 "with one symbol\n";
     std::cout << "  exit         - Exit the shell\n";
     std::cout << "  history      - Show command history\n";
     std::cout << "  help         - Show this help message\n";
@@ -637,6 +641,17 @@ void Shell::CmdDelta(const std::vector<std::string>& args) {
         }
     } catch (const std::exception& e) {
         std::cerr << RED << "pl-shell: " << e.what() << RESET << "\n";
+    }
+}
+
+void Shell::CmdCanonicalCollection(const std::vector<std::string>& args) {
+    if (args.size() > 1) {
+        std::cerr << RED << "pl-shell: collection accepts at most one argument, -v or --verbose\n" << RESET;
+    }
+    if (!args.empty() && (args[0] == "-v" || args[0] == "--verbose")) {
+        slr1.TeachCanonicalCollection();        
+    } else {
+
     }
 }
 
