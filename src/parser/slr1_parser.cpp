@@ -444,7 +444,7 @@ void SLR1Parser::TeachClosureUtil(std::unordered_set<Lr0Item>&     items,
 }
 
 void SLR1Parser::TeachDeltaFunction(const std::unordered_set<Lr0Item>& items,
-                                    const std::string&           symbol) {
+                                    const std::string&                 symbol) {
     std::cout << "Let I be:\n";
     PrintItems(items);
     std::cout << "Process of finding δ(I, " << symbol << "):\n";
@@ -476,6 +476,30 @@ void SLR1Parser::TeachDeltaFunction(const std::unordered_set<Lr0Item>& items,
         std::cout << "5. Closure of J:\n";
         Closure(advanced);
         PrintItems(advanced);
+    }
+}
+
+std::unordered_set<Lr0Item>
+SLR1Parser::Delta(const std::unordered_set<Lr0Item>& items,
+                  const std::string&                 str) {
+    std::vector<Lr0Item> filtered;
+    std::for_each(items.begin(), items.end(), [&](const Lr0Item& item) -> void {
+        std::string next = item.NextToDot();
+        if (next == str) {
+            filtered.push_back(item);
+        }
+    });
+    if (filtered.empty()) {
+        return {};
+    } else {
+        std::unordered_set<Lr0Item> delta_items;
+        delta_items.reserve(filtered.size());
+        for (Lr0Item& lr : filtered) {
+            lr.AdvanceDot();
+            delta_items.insert(lr);
+        }
+        Closure(delta_items);
+        return delta_items;
     }
 }
 

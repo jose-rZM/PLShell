@@ -556,7 +556,7 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
 }
 
 void Shell::CmdDelta(const std::vector<std::string>& args) {
-if (grammar.g_.empty()) {
+    if (grammar.g_.empty()) {
         std::cout << RED
                   << "pl-shell: no grammar was loaded. Load one with load "
                      "<filename>.\n"
@@ -570,11 +570,11 @@ if (grammar.g_.empty()) {
 
     po::options_description desc("Options");
     desc.add_options()("help,h", "There is no docs, good luck :)")(
-        "rules", po::value<std::string>(&rules_str)->required(), "Grammar rules (comma-separated)")
-        ("symbol", po::value<std::string>(&symbol)->required(), "Symbol to consume")
-        ("verbose,v",
-                                           po::bool_switch(&verbose_mode));
-            
+        "rules", po::value<std::string>(&rules_str)->required(),
+        "Grammar rules (comma-separated)")(
+        "symbol", po::value<std::string>(&symbol)->required(),
+        "Symbol to consume")("verbose,v", po::bool_switch(&verbose_mode));
+
     po::positional_options_description pos;
     pos.add("rules", 1);
     pos.add("symbol", 2);
@@ -625,9 +625,9 @@ if (grammar.g_.empty()) {
         if (verbose_mode) {
             slr1.TeachDeltaFunction(items, symbol);
         } else {
-            slr1.Closure(items);
-            std::cout << "Closure:\n";
-            for (const Lr0Item& lr : items) {
+            std::unordered_set<Lr0Item> result{slr1.Delta(items, symbol)};
+            std::cout << "δ(I, " << symbol << "):\n";
+            for (const Lr0Item& lr : result) {
                 std::cout << "  - ";
                 lr.PrintItem();
                 std::cout << "\n";
@@ -636,7 +636,6 @@ if (grammar.g_.empty()) {
     } catch (const std::exception& e) {
         std::cerr << RED << "pl-shell: " << e.what() << RESET << "\n";
     }
-
 }
 
 void Shell::PrintSet(const std::unordered_set<std::string>& set) {
