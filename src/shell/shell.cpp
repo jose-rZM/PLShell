@@ -231,6 +231,8 @@ void Shell::CmdLoad(const std::vector<std::string>& args) {
     std::cout << GREEN << "Grammar loaded successfully.\n";
     ll1  = LL1Parser(grammar);
     slr1 = SLR1Parser(grammar);
+    ll1.CreateLL1Table();
+    slr1.MakeParser();
 }
 
 void Shell::CmdGDebug() {
@@ -414,7 +416,6 @@ void Shell::CmdLL1Table(const std::vector<std::string>& args) {
                   << RESET;
         return;
     }
-    ll1.CreateLL1Table();
     if (verbose_mode) {
         ll1.TeachLL1Table();
     } else {
@@ -475,10 +476,8 @@ void Shell::CmdAllLRItems(const std::vector<std::string>& args) {
                 }
                 std::cout << "\n";
             }
-
-            std::cout << "Total LR(0) items generated: " << items.size()
-                      << "\n";
         }
+        std::cout << "Total LR(0) items generated: " << items.size() << "\n";
     }
 }
 
@@ -654,6 +653,8 @@ void Shell::CmdCanonicalCollection(const std::vector<std::string>& args) {
     if (!args.empty() && (args[0] == "-v" || args[0] == "--verbose")) {
         slr1.TeachCanonicalCollection();
     } else {
+        std::cout << "Canonical Collection:\n";
+        slr1.DebugStates();
     }
 }
 

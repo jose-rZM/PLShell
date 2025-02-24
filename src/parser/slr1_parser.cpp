@@ -504,12 +504,14 @@ SLR1Parser::Delta(const std::unordered_set<Lr0Item>& items,
 }
 
 void SLR1Parser::TeachCanonicalCollection() {
-    std::cout << "=== Process of Constructing the Canonical Collection of LR(0) Items ===\n\n";
+    std::cout << "=== Process of Constructing the Canonical Collection of "
+                 "LR(0) Items ===\n\n";
 
-    Lr0Item init(gr_.axiom_, gr_.g_.at(gr_.axiom_)[0], gr_.st_.EPSILON_, gr_.st_.EOL_);
+    Lr0Item      init(gr_.axiom_, gr_.g_.at(gr_.axiom_)[0], gr_.st_.EPSILON_,
+                      gr_.st_.EOL_);
     unsigned int id = 0;
-    std::unordered_set<state> canonical_collection;
-    std::unordered_set<state> to_add;
+    std::unordered_set<state>   canonical_collection;
+    std::unordered_set<state>   to_add;
     std::unordered_set<Lr0Item> current{init};
 
     std::cout << "=== Step 1: Initialize the Initial State ===\n";
@@ -521,7 +523,7 @@ void SLR1Parser::TeachCanonicalCollection() {
     PrintItems(current);
 
     state qi;
-    qi.id_ = id++;
+    qi.id_    = id++;
     qi.items_ = current;
     canonical_collection.insert(qi);
 
@@ -560,21 +562,26 @@ void SLR1Parser::TeachCanonicalCollection() {
                     PrintItems(delta_ret);
                     std::cout << "      }\n";
 
-                    qi.id_ = id;
+                    qi.id_    = id;
                     qi.items_ = delta_ret;
 
-                    if (visited.find(qi) != visited.end() || to_add.find(qi) != to_add.end() || canonical_collection.find(qi) != canonical_collection.end()) {
-                        std::cout << "      * This set is already in the collection. Skipping.\n";
+                    if (visited.find(qi) != visited.end() ||
+                        to_add.find(qi) != to_add.end() ||
+                        canonical_collection.find(qi) !=
+                            canonical_collection.end()) {
+                        std::cout << "      * This set is already in the "
+                                     "collection. Skipping.\n";
                         const auto& it = canonical_collection.find(qi);
                         transitions[{st.id_, nt}] = it->id_;
                     } else {
                         to_add.insert(qi);
                         transitions[{st.id_, nt}] = qi.id_;
-                        std::cout << "      * This set is added to the collection as state " << id << ".\n";
+                        std::cout << "      * This set is added to the "
+                                     "collection as state "
+                                  << id << ".\n";
                         id++;
                         changed = true;
                     }
-
                 }
             }
 
@@ -588,11 +595,11 @@ void SLR1Parser::TeachCanonicalCollection() {
     std::cout << "\n=== Canonical Collection Summary ===\n";
     std::cout << "- Total states: " << canonical_collection.size() << "\n";
     std::cout << "- States:\n";
-    
+
     for (unsigned int i = 0; i < canonical_collection.size(); ++i) {
-        const auto& current_st = std::find_if(canonical_collection.begin(), canonical_collection.end(), [i](const state& q) -> bool {
-            return i == q.id_;
-        });
+        const auto& current_st = std::find_if(
+            canonical_collection.begin(), canonical_collection.end(),
+            [i](const state& q) -> bool { return i == q.id_; });
         const state st = *current_st;
         std::cout << "  State " << i << ":\n";
         PrintItems(st.items_);
@@ -601,8 +608,9 @@ void SLR1Parser::TeachCanonicalCollection() {
     std::cout << "- Transitions:\n";
     for (const auto& [key, to_state] : transitions) {
         unsigned int from_state = key.first;
-        std::string symbol = key.second;
-        std::cout << "  State " << from_state << " -- " << symbol << " --> State " << to_state << "\n";
+        std::string  symbol     = key.second;
+        std::cout << "  State " << from_state << " -- " << symbol
+                  << " --> State " << to_state << "\n";
     }
 }
 
