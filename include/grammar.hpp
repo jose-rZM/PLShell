@@ -107,6 +107,12 @@ struct Grammar {
     std::unordered_map<std::string, std::vector<production>> g_;
 
     /**
+     * @brief Stores the non-terminals in the order in which they were
+     * introduced. Used for displaying the grammar in order.
+     */
+    std::vector<std::string> order;
+
+    /**
      * @brief The axiom or entry point of the grammar.
      */
     std::string axiom_;

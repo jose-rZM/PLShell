@@ -48,9 +48,17 @@ bool Grammar::ReadFromFile(const std::string& filename) {
                 std::string s = match[2];
                 s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
                 p_grammar[match[1]].push_back(s);
+                if (std::find(order.begin(), order.end(), match[1]) ==
+                    order.end()) {
+                    order.push_back(match[1]);
+                }
             } else if (std::regex_match(input, match, rx_empty_production)) {
                 p_grammar[match[1]].push_back(st_.EPSILON_);
                 st_.terminals_.insert(st_.EPSILON_);
+                if (std::find(order.begin(), order.end(), match[1]) ==
+                    order.end()) {
+                    order.push_back(match[1]);
+                }
             } else {
                 return false;
             }
@@ -151,28 +159,7 @@ Grammar::FilterRulesByConsequent(const std::string& arg) {
 void Grammar::Debug() {
     std::cout << "Grammar:\n";
 
-    std::cout << axiom_ << " -> ";
-    const auto& axiom_productions = g_.at(axiom_);
-    for (size_t i = 0; i < axiom_productions.size(); ++i) {
-        for (const std::string& symbol : axiom_productions[i]) {
-            std::cout << symbol << " ";
-        }
-        if (i < axiom_productions.size() - 1) {
-            std::cout << "| ";
-        }
-    }
-    std::cout << "\n";
-
-    std::vector<std::string> non_terminals;
-    for (const auto& entry : g_) {
-        if (entry.first != axiom_) {
-            non_terminals.push_back(entry.first);
-        }
-    }
-
-    std::sort(non_terminals.begin(), non_terminals.end());
-
-    for (const std::string& nt : non_terminals) {
+    for (const std::string& nt : order) {
         std::cout << nt << " -> ";
         const auto& productions = g_.at(nt);
         for (size_t i = 0; i < productions.size(); ++i) {
