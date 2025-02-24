@@ -554,7 +554,7 @@ void SLR1Parser::TeachCanonicalCollection() {
                 std::unordered_set<Lr0Item> delta_ret = Delta(st.items_, nt);
 
                 if (delta_ret.empty()) {
-                    std::cout << "      - δ(I, " << nt << ") is empty.\n";
+                    std::cout << "      - δ(I, " << nt << ") = ∅\n";
                 } else {
                     std::cout << "      - δ(I, " << nt << ") = {\n";
                     PrintItems(delta_ret);
@@ -565,14 +565,16 @@ void SLR1Parser::TeachCanonicalCollection() {
 
                     if (visited.find(qi) != visited.end() || to_add.find(qi) != to_add.end() || canonical_collection.find(qi) != canonical_collection.end()) {
                         std::cout << "      * This set is already in the collection. Skipping.\n";
+                        const auto& it = canonical_collection.find(qi);
+                        transitions[{st.id_, nt}] = it->id_;
                     } else {
                         to_add.insert(qi);
+                        transitions[{st.id_, nt}] = qi.id_;
                         std::cout << "      * This set is added to the collection as state " << id << ".\n";
                         id++;
                         changed = true;
                     }
 
-                    transitions[{st.id_, nt}] = qi.id_;
                 }
             }
 
