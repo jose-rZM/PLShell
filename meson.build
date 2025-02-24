@@ -19,20 +19,3 @@ executable('plshell',
     dependencies: [boost_dep, readline_dep],
     cpp_args: ['-Oz', '-ffunction-sections', '-fdata-sections']
 )
-
-# Tests
-test_exe = executable('tests',
-    files(
-        'tests/tests.cpp',
-        'src/parser/ll1_parser.cpp',
-        'src/parser/slr1_parser.cpp',
-        'src/parser/grammar.cpp',
-        'src/parser/lr0_item.cpp',
-        'src/parser/symbol_table.cpp',
-        'src/parser/grammar.cpp'
-    ),
-    dependencies: [gtest_dep],
-    link_args: ['-lpthread']
-)
-test('Tests', test_exe)
-

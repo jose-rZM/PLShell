@@ -646,12 +646,14 @@ void Shell::CmdDelta(const std::vector<std::string>& args) {
 
 void Shell::CmdCanonicalCollection(const std::vector<std::string>& args) {
     if (args.size() > 1) {
-        std::cerr << RED << "pl-shell: collection accepts at most one argument, -v or --verbose\n" << RESET;
+        std::cerr << RED
+                  << "pl-shell: collection accepts at most one argument, -v or "
+                     "--verbose\n"
+                  << RESET;
     }
     if (!args.empty() && (args[0] == "-v" || args[0] == "--verbose")) {
-        slr1.TeachCanonicalCollection();        
+        slr1.TeachCanonicalCollection();
     } else {
-
     }
 }
 
