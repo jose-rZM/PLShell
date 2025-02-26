@@ -259,9 +259,12 @@ void Shell::CmdFirst(const std::vector<std::string>& args) {
     std::string             arg;
     bool                    verbose_mode = false;
     po::options_description desc("Options");
-    desc.add_options()("help,h", "There is no docs, good luck :)")(
-        "string", po::value<std::string>(&arg)->required())(
-        "verbose,v", po::bool_switch(&verbose_mode));
+    desc.add_options()("help,h", "Show help message and exit")(
+        "string", po::value<std::string>(&arg)->required(),
+        "Input string to compute the FIRST set for.\nThe string should be a "
+        "sequence of grammar symbols.\n")(
+        "verbose,v", po::bool_switch(&verbose_mode),
+        "Enable verbose mode for detailed output.");
     po::positional_options_description pos;
     pos.add("string", 1);
 
@@ -270,6 +273,16 @@ void Shell::CmdFirst(const std::vector<std::string>& args) {
         po::store(
             po::command_line_parser(args).options(desc).positional(pos).run(),
             vm);
+
+        if (vm.count("help")) {
+            std::cout << "Usage: first [options] <string>\n";
+            std::cout << "Compute the FIRST set for a given string of grammar "
+                         "symbols.\n";
+            std::cout << desc << "\n";
+            std::cout << "Example:\n";
+            std::cout << "first ETF\n";
+            return;
+        }
         po::notify(vm);
         std::vector<std::string> splitted{grammar.Split(arg)};
         if (verbose_mode) {
@@ -494,7 +507,7 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
     std::string rules_str;
 
     po::options_description desc("Options");
-    desc.add_options()("help,h", "There is no docs, good luck :)")(
+    desc.add_options()("help,h", "Show help message and exit")(
         "rules", po::value<std::string>(&rules_str)->required(),
         "Grammar rules (comma-separated)")("verbose,v",
                                            po::bool_switch(&verbose_mode));
@@ -505,6 +518,15 @@ void Shell::CmdClosure(const std::vector<std::string>& args) {
         po::store(
             po::command_line_parser(args).options(desc).positional(pos).run(),
             vm);
+
+        if (vm.count("help")) {
+            std::cout << "Usage: closure [options] <rules>\n";
+            std::cout << "Compute the closure of a set of LR(0) items.\n";
+            std::cout << "Example:\n";
+            std::cout << "closure S->.E,E->E.+T\n";
+            std::cout << "Add -v option to display the process\n";
+            return;
+        }
         po::notify(vm);
 
         std::stringstream           ss(rules_str);
